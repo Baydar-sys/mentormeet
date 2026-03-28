@@ -1,101 +1,125 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabase'
-import Navbar from '../components/Navbar'
+import { supabase } from '../../../lib/supabase'
+import Navbar from '../../components/Navbar'
 
-export default function MentorProfil() {
-  const [mentor, setMentor] = useState(null)
+export default function MentorDashboard() {
+  const [isim, setIsim] = useState('')
+  const [talepler, setTalepler] = useState([])
+  const [randevular] = useState([
+    { isim: "Selin T.", tarih: "Bugün", saat: "15:00", durum: "Onaylı" },
+    { isim: "Burak D.", tarih: "Yarın", saat: "11:00", durum: "Bekliyor" },
+    { isim: "Ayşe M.", tarih: "29 Mart", saat: "14:00", durum: "Onaylı" },
+  ])
 
   useEffect(() => {
     async function getir() {
-      const params = new URLSearchParams(window.location.search)
-      const id = params.get('id')
-      if (!id) return
+      const { data: userData } = await supabase.auth.getUser()
+      setIsim(userData.user?.user_metadata?.isim || '')
 
-      const { data } = await supabase
-        .from('mentorlar')
+      const { data: talepData } = await supabase
+        .from('talepler')
         .select('*')
-        .eq('kullanici_id', id)
-        .single()
+        .eq('mentor_id', userData.user.id)
+        .eq('durum', 'bekliyor')
 
-      setMentor(data)
+      setTalepler(talepData || [])
     }
     getir()
   }, [])
 
-  if (!mentor) {
-    return (
-      <main className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="flex items-center justify-center py-24">
-          <p className="text-gray-400 text-sm">Profil yükleniyor...</p>
-        </div>
-      </main>
-    )
-  }
+  async function talepGuncelle(talepId, yeniDurum) {
+    const { error } = await supabase
+      .from('talepler')
+      .update({ durum: yeniDurum })
+      .eq('id', talepId)
 
-  const yorumlar = [
-    { isim: "Selin T.", puan: 5, yorum: "Çok yardımcı oldu, teşekkürler!", tarih: "2 hafta önce" },
-    { isim: "Burak D.", puan: 5, yorum: "Gerçekten bilgilendirici bir görüşmeydi.", tarih: "1 ay önce" },
-  ]
+    if (!error) {
+      setTalepler(talepler.filter(t => t.id !== talepId))
+    }
+  }
 
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <div className="max-w-3xl mx-auto px-6 py-10">
-        <a href="javascript:history.back()" className="inline-flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 mb-6">
-          ← Geri dön
-        </a>
+      <div className="max-w-4xl mx-auto px-6 py-10">
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-          <div className="flex items-start gap-6">
-            <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center text-2xl font-semibold text-blue-700 shrink-0">
-              {mentor.isim?.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1">
-              <h1 className="text-xl font-semibold text-black mb-1">{mentor.isim} {mentor.soyisim}</h1>
-              <p className="text-sm text-gray-500 mb-3">{mentor.unvan} · {mentor.firma}</p>
-              <div className="flex gap-3 flex-wrap">
-                <span className="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium">
-                  {mentor.sektor}
-                </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
-                  {mentor.deneyim} deneyim
-                </span>
-              </div>
-            </div>
-            <button className="bg-black text-white px-5 py-2.5 rounded-lg text-sm hover:bg-gray-800 shrink-0">
-              Görüşme talep et
-            </button>
+        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8 flex items-center gap-6">
+          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-xl font-semibold text-gray-600">
+            {isim.charAt(0).toUpperCase()}
           </div>
+          <div className="flex-1">
+            <h1 className="text-lg font-semibold text-black">{isim}</h1>
+            <p className="text-sm text-gray-400 mt-1">Profilini tamamla — öğrenciler seni daha kolay bulsun</p>
+          </div>
+          <a href="/dashboard/mentor/profil" className="text-sm border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
+            Profili düzenle
+          </a>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-          <h2 className="text-base font-semibold text-black mb-3">Hakkımda</h2>
-          <p className="text-sm text-gray-500 leading-relaxed">{mentor.hakkinda}</p>
-        </div>
+        <div className="grid grid-cols-2 gap-6">
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <h2 className="text-base font-semibold text-black mb-4">
-            Değerlendirmeler
-            <span className="text-sm font-normal text-gray-400 ml-2">({yorumlar.length} yorum)</span>
-          </h2>
-          <div className="flex flex-col gap-4">
-            {yorumlar.map((y, i) => (
-              <div key={i} className={i < yorumlar.length - 1 ? "pb-4 border-b border-gray-100" : ""}>
-                <div className="flex justify-between items-start mb-1">
-                  <div>
-                    <span className="text-sm font-medium text-black">{y.isim}</span>
-                    <span className="text-xs text-yellow-500 ml-2">{"★".repeat(y.puan)}</span>
+          <div>
+            <h2 className="text-base font-semibold text-black mb-4">
+              Görüşme talepleri
+              {talepler.length > 0 && (
+                <span className="ml-2 text-xs bg-black text-white px-2 py-0.5 rounded-full">{talepler.length}</span>
+              )}
+            </h2>
+            {talepler.length === 0 ? (
+              <p className="text-sm text-gray-400">Henüz bekleyen talep yok.</p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {talepler.map((t) => (
+                  <div key={t.id} className="bg-white border border-gray-200 rounded-xl p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <p className="text-sm font-medium text-black">Öğrenci</p>
+                      <span className="text-xs bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full">Bekliyor</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-3">{t.mesaj}</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => talepGuncelle(t.id, 'onaylandi')}
+                        className="flex-1 text-xs bg-black text-white py-2 rounded-lg hover:bg-gray-800"
+                      >
+                        Kabul et
+                      </button>
+                      <button
+                        onClick={() => talepGuncelle(t.id, 'reddedildi')}
+                        className="flex-1 text-xs border border-gray-200 py-2 rounded-lg hover:bg-gray-50"
+                      >
+                        Reddet
+                      </button>
+                    </div>
                   </div>
-                  <span className="text-xs text-gray-400">{y.tarih}</span>
-                </div>
-                <p className="text-sm text-gray-500">{y.yorum}</p>
+                ))}
               </div>
-            ))}
+            )}
           </div>
+
+          <div>
+            <h2 className="text-base font-semibold text-black mb-4">Randevular</h2>
+            <div className="flex flex-col gap-3">
+              {randevular.map((r, i) => (
+                <div key={i} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-4">
+                  <div className="text-center min-w-12">
+                    <p className="text-xs text-gray-400">{r.tarih}</p>
+                    <p className="text-base font-semibold text-black">{r.saat}</p>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-black">{r.isim}</p>
+                    <p className="text-xs text-gray-400">Görüntülü görüşme</p>
+                  </div>
+                  <span className={'text-xs px-2 py-1 rounded-full font-medium ' + (r.durum === 'Onaylı' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700')}>
+                    {r.durum}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </main>
