@@ -39,6 +39,8 @@ export default function MentorDashboard() {
   }, [])
 
   async function talepGuncelle(talepId, yeniDurum) {
+    const talep = talepler.find(t => t.id === talepId)
+
     const { error } = await supabase
       .from('talepler')
       .update({ durum: yeniDurum })
@@ -46,9 +48,32 @@ export default function MentorDashboard() {
 
     if (!error) {
       setTalepler(talepler.filter(t => t.id !== talepId))
+
+      if (yeniDurum === 'onaylandi' && talep) {
+        const { data: ogrenciData } = await supabase.auth.admin?.getUserById?.(talep.ogrenci_id) || {}
+
+        await fetch('/api/bildirim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: ogrenciData?.email || '',
+            konu: 'Görüşme talebiniz onaylandı! 🎉',
+            icerik: `
+              <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+                <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talebiniz onaylandı!</h1>
+                <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+                  Mentor görüşme talebiniz onaylandı. Şimdi mesajlaşmaya başlayabilirsiniz.
+                </p>
+                <a href="http://localhost:3000/mesajlar" style="background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px;">
+                  Mesajlara git
+                </a>
+              </div>
+            `
+          })
+        })
+      }
     }
   }
-
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />

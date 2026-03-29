@@ -102,8 +102,8 @@ export default function Home() {
           <span className="font-semibold text-black">MentorMeet</span>
           <p className="text-sm text-gray-400">© 2025 MentorMeet. Tüm hakları saklıdır.</p>
           <div className="flex gap-6">
-            <a href="#" className="text-sm text-gray-400 hover:text-black">Hakkımızda</a>
-            <a href="#" className="text-sm text-gray-400 hover:text-black">Gizlilik</a>
+            <a href="/hakkimizda" className="text-sm text-gray-400 hover:text-black">Hakkımızda</a>
+            <a href="/gizlilik" className="text-sm text-gray-400 hover:text-black">Gizlilik</a>
             <a href="#" className="text-sm text-gray-400 hover:text-black">İletişim</a>
           </div>
         </div>

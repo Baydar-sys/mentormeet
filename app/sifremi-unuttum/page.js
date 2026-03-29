@@ -27,22 +27,15 @@ export default function SifremiUnuttum() {
 
   return (
     <main className="min-h-screen bg-gray-50 flex">
-
-      {/* Sol panel */}
       <div className="hidden lg:flex w-1/2 bg-gray-900 flex-col justify-between p-12">
         <a href="/" className="font-semibold text-white text-lg">MentorMeet</a>
         <div>
-          <h2 className="text-3xl font-semibold text-white mb-4 leading-snug">
-            Şifreni sıfırla
-          </h2>
-          <p className="text-gray-400 text-sm leading-relaxed">
-            E-posta adresini gir, sana şifre sıfırlama bağlantısı gönderelim.
-          </p>
+          <h2 className="text-3xl font-semibold text-white mb-4 leading-snug">Şifreni sıfırla</h2>
+          <p className="text-gray-400 text-sm leading-relaxed">E-posta adresini gir, sana şifre sıfırlama bağlantısı gönderelim.</p>
         </div>
         <p className="text-xs text-gray-600">© 2025 MentorMeet</p>
       </div>
 
-      {/* Sağ panel */}
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm">
           {gonderildi ? (
@@ -60,9 +53,7 @@ export default function SifremiUnuttum() {
             <>
               <div className="mb-8">
                 <h1 className="text-2xl font-semibold text-black mb-2">Şifreni unuttun mu?</h1>
-                <p className="text-sm text-gray-400">
-                  Hesabına kayıtlı e-posta adresini gir.
-                </p>
+                <p className="text-sm text-gray-400">Hesabına kayıtlı e-posta adresini gir.</p>
               </div>
 
               <div className="flex flex-col gap-3">
@@ -82,9 +73,7 @@ export default function SifremiUnuttum() {
                 </button>
               </div>
 
-              {mesaj && (
-                <p className="text-sm text-gray-500 mt-4 text-center">{mesaj}</p>
-              )}
+              {mesaj && <p className="text-sm text-gray-500 mt-4 text-center">{mesaj}</p>}
 
               <p className="text-sm text-gray-400 text-center mt-6">
                 Şifreni hatırladın mı?{' '}

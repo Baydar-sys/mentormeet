@@ -15,7 +15,7 @@ export default function MentorProfil() {
   const [gonderildi, setGonderildi] = useState(false)
   const [hata, setHata] = useState('')
   const [modalAcik, setModalAcik] = useState(false)
-  const [yorumlar, setYorumllar] = useState([])
+  const [yorumlar, setYorumlar] = useState([])
   const [yeniPuan, setYeniPuan] = useState(5)
   const [yeniYorum, setYeniYorum] = useState('')
   const [yorumMesaj, setYorumMesaj] = useState('')
@@ -44,7 +44,7 @@ export default function MentorProfil() {
         .eq('mentor_id', id)
         .order('created_at', { ascending: false })
 
-      setYorumllar(yorumData || [])
+      setYorumlar(yorumData || [])
 
       if (data?.sektor) {
         const { data: benzer } = await supabase
@@ -63,6 +63,18 @@ export default function MentorProfil() {
   async function talepGonder() {
     if (!mesaj.trim()) {
       setHata('Lütfen bir mesaj yaz.')
+      return
+    }
+
+    const { data: mevcutTalep } = await supabase
+      .from('talepler')
+      .select('id')
+      .eq('ogrenci_id', kullanici.id)
+      .eq('mentor_id', mentor.kullanici_id)
+      .single()
+
+    if (mevcutTalep) {
+      setHata('Bu mentora zaten bir talep gönderdiniz.')
       return
     }
 
@@ -105,7 +117,7 @@ export default function MentorProfil() {
         .select('*')
         .eq('mentor_id', mentor.kullanici_id)
         .order('created_at', { ascending: false })
-      setYorumllar(yorumData || [])
+      setYorumlar(yorumData || [])
     }
   }
 
@@ -130,7 +142,6 @@ export default function MentorProfil() {
 
       <div className="max-w-3xl mx-auto px-6 py-10">
 
-        {/* Profil kartı */}
         <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-6">
           <div className="h-24 bg-gradient-to-r from-gray-900 to-gray-700"></div>
           <div className="px-6 pb-6">
@@ -164,7 +175,6 @@ export default function MentorProfil() {
           </div>
         </div>
 
-        {/* Hakkımda */}
         {mentor.hakkinda && (
           <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
             <h2 className="text-base font-semibold text-black mb-3">Hakkımda</h2>
@@ -172,7 +182,6 @@ export default function MentorProfil() {
           </div>
         )}
 
-        {/* Müsait günler */}
         {mentor.musait_gunler?.length > 0 && (
           <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
             <h2 className="text-base font-semibold text-black mb-4">Müsaitlik</h2>
@@ -192,7 +201,6 @@ export default function MentorProfil() {
           </div>
         )}
 
-        {/* Değerlendirmeler */}
         <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -212,7 +220,7 @@ export default function MentorProfil() {
               )}
             </div>
             {kullanici && kullanici.user_metadata?.rol !== 'mentor' && (
-              <button onClick={() => setYorumModalAcik(true)} className="text-sm text-black border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
+              <button onClick={() => setYorumModalAcik(true)} className="text-sm border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
                 Değerlendir
               </button>
             )}
@@ -226,9 +234,7 @@ export default function MentorProfil() {
                 <div key={i} className={i < yorumlar.length - 1 ? "pb-4 border-b border-gray-100" : ""}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">
-                        Ö
-                      </div>
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">Ö</div>
                       <div>
                         <p className="text-sm font-medium text-black">Öğrenci</p>
                         <div className="flex gap-0.5">
@@ -247,7 +253,6 @@ export default function MentorProfil() {
           )}
         </div>
 
-        {/* Benzer mentorlar */}
         {benzerMentorlar.length > 0 && (
           <div>
             <h2 className="text-base font-semibold text-black mb-4">Benzer mentorlar</h2>
@@ -275,7 +280,6 @@ export default function MentorProfil() {
         )}
       </div>
 
-      {/* Görüşme talep modal */}
       {modalAcik && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
@@ -286,9 +290,7 @@ export default function MentorProfil() {
                 </div>
                 <h3 className="text-lg font-semibold text-black mb-2">Talep gönderildi!</h3>
                 <p className="text-sm text-gray-400 mb-4">{mentor.isim} talebini inceleyecek.</p>
-                <button onClick={() => { setModalAcik(false); setGonderildi(false); setMesaj('') }} className="bg-black text-white px-6 py-2.5 rounded-lg text-sm hover:bg-gray-800">
-                  Tamam
-                </button>
+                <button onClick={() => { setModalAcik(false); setGonderildi(false); setMesaj('') }} className="bg-black text-white px-6 py-2.5 rounded-lg text-sm hover:bg-gray-800">Tamam</button>
               </div>
             ) : (
               <>
@@ -306,13 +308,11 @@ export default function MentorProfil() {
         </div>
       )}
 
-      {/* Yorum modal */}
       {yorumModalAcik && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold text-black mb-1">{mentor.isim} için değerlendirme yaz</h3>
             <p className="text-sm text-gray-400 mb-4">Deneyimini diğer öğrencilerle paylaş.</p>
-
             <div className="mb-4">
               <p className="text-xs font-medium text-gray-500 mb-2">Puan</p>
               <div className="flex gap-2">
@@ -323,14 +323,7 @@ export default function MentorProfil() {
                 ))}
               </div>
             </div>
-
-            <textarea
-              placeholder="Görüşme nasıldı? Diğer öğrenciler için deneyimini anlat..."
-              value={yeniYorum}
-              onChange={(e) => setYeniYorum(e.target.value)}
-              rows={4}
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-black outline-none focus:border-black resize-none mb-3"
-            />
+            <textarea placeholder="Görüşme nasıldı?" value={yeniYorum} onChange={(e) => setYeniYorum(e.target.value)} rows={4} className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-black outline-none focus:border-black resize-none mb-3" />
             {yorumMesaj && <p className="text-sm text-red-500 mb-3">{yorumMesaj}</p>}
             <div className="flex gap-3">
               <button onClick={() => setYorumModalAcik(false)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm hover:bg-gray-50">İptal</button>
