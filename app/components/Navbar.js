@@ -7,6 +7,17 @@ export default function Navbar() {
   const [kullanici, setKullanici] = useState(null)
   const [yukleniyor, setYukleniyor] = useState(true)
   const [avatarUrl, setAvatarUrl] = useState('')
+  const [okunmamisMesaj, setOkunmamisMesaj] = useState(0)
+
+  async function bildirimleriGetir(userId) {
+    const { data: mesajlar } = await supabase
+      .from('mesajlar')
+      .select('id')
+      .eq('alici_id', userId)
+      .eq('okundu', false)
+
+    setOkunmamisMesaj(mesajlar?.length || 0)
+  }
 
   useEffect(() => {
     async function getir() {
@@ -14,6 +25,7 @@ export default function Navbar() {
       setKullanici(data.user)
       setAvatarUrl(data.user?.user_metadata?.avatar_url || '')
       setYukleniyor(false)
+      if (data.user) bildirimleriGetir(data.user.id)
     }
     getir()
 
@@ -23,6 +35,7 @@ export default function Navbar() {
       setKullanici(session?.user || null)
       setAvatarUrl(session?.user?.user_metadata?.avatar_url || '')
       setYukleniyor(false)
+      if (session?.user) bildirimleriGetir(session.user.id)
     })
 
     return () => {
@@ -30,6 +43,22 @@ export default function Navbar() {
       listener.subscription.unsubscribe()
     }
   }, [])
+
+  useEffect(() => {
+    if (!kullanici) return
+
+    const kanal = supabase
+      .channel('bildirimler')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mesajlar' }, () => {
+        bildirimleriGetir(kullanici.id)
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mesajlar' }, () => {
+        bildirimleriGetir(kullanici.id)
+      })
+      .subscribe()
+
+    return () => supabase.removeChannel(kanal)
+  }, [kullanici])
 
   const dashboardLink = kullanici?.user_metadata?.rol === 'mentor' ? '/dashboard/mentor' : '/dashboard/ogrenci'
   const profilLink = kullanici?.user_metadata?.rol === 'mentor' ? '/dashboard/mentor/profil' : '/dashboard/ogrenci/profil'
@@ -42,6 +71,11 @@ export default function Navbar() {
       ) : kullanici ? (
         <div className="flex gap-4 items-center">
           <a href="/mesajlar" className="text-sm text-gray-600 hover:text-black">Mesajlar</a>
+          {okunmamisMesaj > 0 && (
+            <span className="bg-black text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+              {okunmamisMesaj}
+            </span>
+          )}
           <a href={dashboardLink} className="text-sm text-gray-600 hover:text-black">Dashboard</a>
           <a href={profilLink} className="flex items-center gap-2 hover:opacity-80">
             <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden">

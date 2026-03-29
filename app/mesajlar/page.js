@@ -76,10 +76,12 @@ export default function Mesajlar() {
       setMesajlar(data || [])
 
       await supabase
-        .from('mesajlar')
-        .update({ okundu: true })
-        .eq('alici_id', kullanici.id)
-        .eq('gonderen_id', aktifKisi.id)
+  .from('mesajlar')
+  .update({ okundu: true })
+  .eq('alici_id', kullanici.id)
+  .eq('gonderen_id', aktifKisi.id)
+
+window.dispatchEvent(new Event('focus'))
     }
     mesajlariGetir()
 
