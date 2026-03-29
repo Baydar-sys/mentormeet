@@ -76,6 +76,9 @@ export default function Giris() {
             >
               Giriş yap
             </button>
+            <a href="/sifremi-unuttum" className="text-xs text-gray-400 hover:text-black text-center">
+  Şifremi unuttum
+</a>
           </div>
 
           {mesaj && (
