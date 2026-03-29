@@ -6,6 +6,7 @@ import Navbar from '../../components/Navbar'
 
 export default function MentorDashboard() {
   const [isim, setIsim] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
   const [talepler, setTalepler] = useState([])
   const [randevular] = useState([
     { isim: "Selin T.", tarih: "Bugün", saat: "15:00", durum: "Onaylı" },
@@ -17,6 +18,14 @@ export default function MentorDashboard() {
     async function getir() {
       const { data: userData } = await supabase.auth.getUser()
       setIsim(userData.user?.user_metadata?.isim || '')
+
+      const { data: mentorData } = await supabase
+        .from('mentorlar')
+        .select('avatar_url')
+        .eq('kullanici_id', userData.user.id)
+        .single()
+
+      if (mentorData) setAvatarUrl(mentorData.avatar_url || '')
 
       const { data: talepData } = await supabase
         .from('talepler')
@@ -47,14 +56,18 @@ export default function MentorDashboard() {
       <div className="max-w-4xl mx-auto px-6 py-10">
 
         <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8 flex items-center gap-6">
-          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-xl font-semibold text-gray-600">
-            {isim.charAt(0).toUpperCase()}
+          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-xl font-semibold text-gray-600 overflow-hidden">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+            ) : (
+              isim.charAt(0).toUpperCase()
+            )}a
           </div>
           <div className="flex-1">
             <h1 className="text-lg font-semibold text-black">{isim}</h1>
             <p className="text-sm text-gray-400 mt-1">Profilini tamamla — öğrenciler seni daha kolay bulsun</p>
           </div>
-          <a href="/dashboard/mentor/profil" className="text-sm border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
+          <a href="/dashboard/mentor/profil" className="text-sm text-black border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
             Profili düzenle
           </a>
         </div>

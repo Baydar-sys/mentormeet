@@ -4,6 +4,17 @@ import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import Navbar from '../components/Navbar'
 
+function zamanFarki(tarih) {
+  const simdi = new Date()
+  const mesajTarihi = new Date(tarih)
+  const fark = Math.floor((simdi - mesajTarihi) / 1000)
+
+  if (fark < 60) return 'Az önce'
+  if (fark < 3600) return Math.floor(fark / 60) + ' dk önce'
+  if (fark < 86400) return Math.floor(fark / 3600) + ' saat önce'
+  return Math.floor(fark / 86400) + ' gün önce'
+}
+
 export default function Mesajlar() {
   const [kullanici, setKullanici] = useState(null)
   const [konusmalar, setKonusmalar] = useState([])
@@ -28,14 +39,23 @@ export default function Mesajlar() {
         const kisiId = t.ogrenci_id === userData.user.id ? t.mentor_id : t.ogrenci_id
         const { data: mentorData } = await supabase
           .from('mentorlar')
-          .select('isim, soyisim, kullanici_id')
+          .select('isim, soyisim, kullanici_id, avatar_url')
           .eq('kullanici_id', kisiId)
           .single()
 
         if (mentorData) {
-          kisiler.push({ id: kisiId, isim: mentorData.isim + ' ' + mentorData.soyisim })
+          kisiler.push({
+            id: kisiId,
+            isim: mentorData.isim + ' ' + mentorData.soyisim,
+            avatar_url: mentorData.avatar_url || ''
+          })
         } else {
-          kisiler.push({ id: kisiId, isim: 'Öğrenci' })
+          const { data: authUser } = await supabase.auth.admin?.getUserById?.(kisiId) || {}
+          kisiler.push({
+            id: kisiId,
+            isim: authUser?.user_metadata?.isim || 'Öğrenci',
+            avatar_url: authUser?.user_metadata?.avatar_url || ''
+          })
         }
       }
       setKonusmalar(kisiler)
@@ -54,15 +74,24 @@ export default function Mesajlar() {
         .order('created_at', { ascending: true })
 
       setMesajlar(data || [])
+
+      await supabase
+        .from('mesajlar')
+        .update({ okundu: true })
+        .eq('alici_id', kullanici.id)
+        .eq('gonderen_id', aktifKisi.id)
     }
     mesajlariGetir()
 
     const kanal = supabase
-      .channel('mesajlar-kanal')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mesajlar' }, (payload) => {
-        setMesajlar((prev) => [...prev, payload.new])
-      })
-      .subscribe()
+  .channel('mesajlar-kanal-' + aktifKisi.id)
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mesajlar' }, (payload) => {
+    setMesajlar((prev) => [...prev, payload.new])
+  })
+  .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mesajlar' }, (payload) => {
+    setMesajlar((prev) => prev.map(m => m.id === payload.new.id ? payload.new : m))
+  })
+  .subscribe()
 
     return () => supabase.removeChannel(kanal)
   }, [aktifKisi, kullanici])
@@ -78,11 +107,7 @@ export default function Mesajlar() {
       alici_id: aktifKisi.id,
       icerik: yeniMesaj
     })
-    if (error) {
-      console.log('mesaj hatası:', error)
-    } else {
-      setYeniMesaj('')
-    }
+    if (!error) setYeniMesaj('')
   }
 
   return (
@@ -93,6 +118,7 @@ export default function Mesajlar() {
 
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden flex" style={{ height: '600px' }}>
 
+          {/* Sol panel */}
           <div className="w-64 border-r border-gray-200 flex flex-col">
             <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-medium text-gray-400">Konuşmalar</p>
@@ -107,8 +133,12 @@ export default function Mesajlar() {
                     onClick={() => setAktifKisi(k)}
                     className={'flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 ' + (aktifKisi?.id === k.id ? 'bg-gray-100' : '')}
                   >
-                    <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 shrink-0">
-                      {k.isim.charAt(0).toUpperCase()}
+                    <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 shrink-0 overflow-hidden">
+                      {k.avatar_url ? (
+                        <img src={k.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        k.isim.charAt(0).toUpperCase()
+                      )}
                     </div>
                     <p className="text-sm font-medium text-black">{k.isim}</p>
                   </div>
@@ -117,21 +147,32 @@ export default function Mesajlar() {
             </div>
           </div>
 
+          {/* Sağ panel */}
           <div className="flex-1 flex flex-col">
             {aktifKisi ? (
               <>
                 <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700">
-                    {aktifKisi.isim.charAt(0).toUpperCase()}
+                  <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden">
+                    {aktifKisi.avatar_url ? (
+                      <img src={aktifKisi.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      aktifKisi.isim.charAt(0).toUpperCase()
+                    )}
                   </div>
                   <p className="text-sm font-medium text-black">{aktifKisi.isim}</p>
                 </div>
 
                 <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3">
                   {mesajlar.map((m, i) => (
-                    <div key={i} className={'flex ' + (m.gonderen_id === kullanici.id ? 'justify-end' : 'justify-start')}>
+                    <div key={i} className={'flex flex-col ' + (m.gonderen_id === kullanici.id ? 'items-end' : 'items-start')}>
                       <div className={'max-w-xs px-4 py-2.5 rounded-2xl text-sm ' + (m.gonderen_id === kullanici.id ? 'bg-black text-white rounded-br-sm' : 'bg-gray-100 text-black rounded-bl-sm')}>
                         {m.icerik}
+                      </div>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span className="text-xs text-gray-400">{zamanFarki(m.created_at)}</span>
+                        {m.gonderen_id === kullanici.id && (
+                          <span className="text-xs text-gray-400">{m.okundu ? '· Okundu' : '· İletildi'}</span>
+                        )}
                       </div>
                     </div>
                   ))}

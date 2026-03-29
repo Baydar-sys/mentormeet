@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar'
 
 export default function MentorProfil() {
   const [mentor, setMentor] = useState(null)
+  const [benzerMentorlar, setBenzerMentorlar] = useState([])
+  const [kullanici, setKullanici] = useState(null)
   const [mesaj, setMesaj] = useState('')
   const [gonderildi, setGonderildi] = useState(false)
   const [hata, setHata] = useState('')
@@ -17,6 +19,9 @@ export default function MentorProfil() {
       const id = params.get('id')
       if (!id) return
 
+      const { data: userData } = await supabase.auth.getUser()
+      setKullanici(userData.user)
+
       const { data } = await supabase
         .from('mentorlar')
         .select('*')
@@ -24,6 +29,17 @@ export default function MentorProfil() {
         .single()
 
       setMentor(data)
+
+      if (data?.sektor) {
+        const { data: benzer } = await supabase
+          .from('mentorlar')
+          .select('*')
+          .eq('sektor', data.sektor)
+          .neq('kullanici_id', id)
+          .limit(3)
+
+        setBenzerMentorlar(benzer || [])
+      }
     }
     getir()
   }, [])
@@ -34,14 +50,8 @@ export default function MentorProfil() {
       return
     }
 
-    const { data: userData } = await supabase.auth.getUser()
-    if (!userData.user) {
-      window.location.href = '/giris'
-      return
-    }
-
     const { error } = await supabase.from('talepler').insert({
-      ogrenci_id: userData.user.id,
+      ogrenci_id: kullanici.id,
       mentor_id: mentor.kullanici_id,
       mesaj: mesaj,
       durum: 'bekliyor'
@@ -76,14 +86,16 @@ export default function MentorProfil() {
       <Navbar />
 
       <div className="max-w-3xl mx-auto px-6 py-10">
-        <a href="javascript:history.back()" className="inline-flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 mb-6">
-          ← Geri dön
-        </a>
 
+        {/* Profil kartı */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
           <div className="flex items-start gap-6">
-            <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center text-2xl font-semibold text-blue-700 shrink-0">
-              {mentor.isim?.charAt(0).toUpperCase()}
+            <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center text-2xl font-semibold text-blue-700 shrink-0 overflow-hidden">
+              {mentor.avatar_url ? (
+                <img src={mentor.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+              ) : (
+                mentor.isim?.charAt(0).toUpperCase()
+              )}
             </div>
             <div className="flex-1">
               <h1 className="text-xl font-semibold text-black mb-1">{mentor.isim} {mentor.soyisim}</h1>
@@ -97,21 +109,49 @@ export default function MentorProfil() {
                 </span>
               </div>
             </div>
-            <button
-              onClick={() => setModalAcik(true)}
-              className="bg-black text-white px-5 py-2.5 rounded-lg text-sm hover:bg-gray-800 shrink-0"
-            >
-              Görüşme talep et
-            </button>
+            {kullanici && kullanici.user_metadata?.rol !== 'mentor' && (
+              <button
+                onClick={() => setModalAcik(true)}
+                className="bg-black text-white px-5 py-2.5 rounded-lg text-sm hover:bg-gray-800 shrink-0"
+              >
+                Görüşme talep et
+              </button>
+            )}
+            {!kullanici && (
+              <a href="/giris" className="bg-black text-white px-5 py-2.5 rounded-lg text-sm hover:bg-gray-800 shrink-0">
+                Giriş yap
+              </a>
+            )}
           </div>
         </div>
 
+        {/* Hakkımda */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
           <h2 className="text-base font-semibold text-black mb-3">Hakkımda</h2>
           <p className="text-sm text-gray-500 leading-relaxed">{mentor.hakkinda}</p>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
+        {/* Müsait günler */}
+        {(mentor.musait_gunler?.length > 0 || mentor.musait_saat) && (
+          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+            <h2 className="text-base font-semibold text-black mb-3">Müsaitlik</h2>
+            {mentor.musait_gunler?.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {mentor.musait_gunler.map((g) => (
+                  <span key={g} className="text-xs bg-green-50 text-green-700 px-3 py-1 rounded-full font-medium">
+                    {g}
+                  </span>
+                ))}
+              </div>
+            )}
+            {mentor.musait_saat && (
+              <p className="text-sm text-gray-500">Saat aralığı: {mentor.musait_saat}</p>
+            )}
+          </div>
+        )}
+
+        {/* Değerlendirmeler */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
           <h2 className="text-base font-semibold text-black mb-4">
             Değerlendirmeler
             <span className="text-sm font-normal text-gray-400 ml-2">({yorumlar.length} yorum)</span>
@@ -131,6 +171,34 @@ export default function MentorProfil() {
             ))}
           </div>
         </div>
+
+        {/* Benzer mentorlar */}
+        {benzerMentorlar.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-base font-semibold text-black mb-4">Benzer mentorlar</h2>
+            <div className="grid grid-cols-3 gap-4">
+              {benzerMentorlar.map((m) => (
+                <a key={m.kullanici_id} href={'/mentor?id=' + m.kullanici_id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-sm block">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden shrink-0">
+                      {m.avatar_url ? (
+                        <img src={m.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        m.isim?.charAt(0).toUpperCase()
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-black">{m.isim} {m.soyisim}</p>
+                      <p className="text-xs text-gray-400">{m.unvan}</p>
+                    </div>
+                  </div>
+                  <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">{m.sektor}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
 
       {modalAcik && (
