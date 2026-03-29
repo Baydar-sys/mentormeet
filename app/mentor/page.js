@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import Navbar from '../components/Navbar'
 
+const gunSirasi = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar']
+const gunKisa = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
+
 export default function MentorProfil() {
   const [mentor, setMentor] = useState(null)
   const [benzerMentorlar, setBenzerMentorlar] = useState([])
@@ -77,8 +80,9 @@ export default function MentorProfil() {
   }
 
   const yorumlar = [
-    { isim: "Selin T.", puan: 5, yorum: "Çok yardımcı oldu, teşekkürler!", tarih: "2 hafta önce" },
-    { isim: "Burak D.", puan: 5, yorum: "Gerçekten bilgilendirici bir görüşmeydi.", tarih: "1 ay önce" },
+    { isim: "Selin T.", puan: 5, yorum: "Ahmet Bey gerçekten çok yardımcı oldu. Yazılım mühendisliği hakkında hiç bilmediğim detayları öğrendim. Kesinlikle tavsiye ederim!", tarih: "2 hafta önce" },
+    { isim: "Burak D.", puan: 5, yorum: "Samimi ve bilgilendirici bir görüşmeydi. Hangi bölümü seçeceğim konusunda kafam çok netleşti.", tarih: "1 ay önce" },
+    { isim: "Ayşe M.", puan: 4, yorum: "Çok güzel bir sohbetti. Sektör hakkında gerçekçi bilgiler aldım.", tarih: "2 ay önce" },
   ]
 
   return (
@@ -88,85 +92,113 @@ export default function MentorProfil() {
       <div className="max-w-3xl mx-auto px-6 py-10">
 
         {/* Profil kartı */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-          <div className="flex items-start gap-6">
-            <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center text-2xl font-semibold text-blue-700 shrink-0 overflow-hidden">
-              {mentor.avatar_url ? (
-                <img src={mentor.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-              ) : (
-                mentor.isim?.charAt(0).toUpperCase()
-              )}
-            </div>
-            <div className="flex-1">
-              <h1 className="text-xl font-semibold text-black mb-1">{mentor.isim} {mentor.soyisim}</h1>
-              <p className="text-sm text-gray-500 mb-3">{mentor.unvan} · {mentor.firma}</p>
-              <div className="flex gap-3 flex-wrap">
-                <span className="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium">
-                  {mentor.sektor}
-                </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
-                  {mentor.deneyim} deneyim
-                </span>
+        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-6">
+          {/* Üst banner */}
+          <div className="h-24 bg-gradient-to-r from-gray-900 to-gray-700"></div>
+
+          <div className="px-6 pb-6">
+            {/* Avatar */}
+            <div className="flex justify-between items-end -mt-12 mb-4">
+              <div className="w-24 h-24 rounded-2xl bg-blue-50 flex items-center justify-center text-3xl font-semibold text-blue-700 overflow-hidden border-4 border-white">
+                {mentor.avatar_url ? (
+                  <img src={mentor.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
+                  mentor.isim?.charAt(0).toUpperCase()
+                )}
               </div>
+              {kullanici && kullanici.user_metadata?.rol !== 'mentor' ? (
+                <button
+                  onClick={() => setModalAcik(true)}
+                  className="bg-black text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800"
+                >
+                  Görüşme talep et
+                </button>
+              ) : !kullanici ? (
+                <a href="/giris" className="bg-black text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800">
+                  Giriş yap
+                </a>
+              ) : null}
             </div>
-            {kullanici && kullanici.user_metadata?.rol !== 'mentor' && (
-              <button
-                onClick={() => setModalAcik(true)}
-                className="bg-black text-white px-5 py-2.5 rounded-lg text-sm hover:bg-gray-800 shrink-0"
-              >
-                Görüşme talep et
-              </button>
-            )}
-            {!kullanici && (
-              <a href="/giris" className="bg-black text-white px-5 py-2.5 rounded-lg text-sm hover:bg-gray-800 shrink-0">
-                Giriş yap
-              </a>
-            )}
+
+            {/* Bilgiler */}
+            <h1 className="text-2xl font-semibold text-black mb-1">{mentor.isim} {mentor.soyisim}</h1>
+            <p className="text-gray-500 mb-4">{mentor.unvan} · {mentor.firma}</p>
+
+            <div className="flex gap-2 flex-wrap">
+              <span className="text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full font-medium">
+                {mentor.sektor}
+              </span>
+              <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full">
+                {mentor.deneyim} deneyim
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Hakkımda */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-          <h2 className="text-base font-semibold text-black mb-3">Hakkımda</h2>
-          <p className="text-sm text-gray-500 leading-relaxed">{mentor.hakkinda}</p>
-        </div>
+        {mentor.hakkinda && (
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
+            <h2 className="text-base font-semibold text-black mb-3">Hakkımda</h2>
+            <p className="text-sm text-gray-500 leading-relaxed">{mentor.hakkinda}</p>
+          </div>
+        )}
 
-        {/* Müsait günler */}
-        {(mentor.musait_gunler?.length > 0 || mentor.musait_saat) && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-            <h2 className="text-base font-semibold text-black mb-3">Müsaitlik</h2>
-            {mentor.musait_gunler?.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {mentor.musait_gunler.map((g) => (
-                  <span key={g} className="text-xs bg-green-50 text-green-700 px-3 py-1 rounded-full font-medium">
-                    {g}
-                  </span>
-                ))}
-              </div>
-            )}
+        {/* Müsait günler takvim */}
+        {mentor.musait_gunler?.length > 0 && (
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
+            <h2 className="text-base font-semibold text-black mb-4">Müsaitlik</h2>
+            <div className="grid grid-cols-7 gap-2 mb-3">
+              {gunSirasi.map((gun, i) => (
+                <div key={gun} className="text-center">
+                  <p className="text-xs text-gray-400 mb-2">{gunKisa[i]}</p>
+                  <div className={`w-full aspect-square rounded-lg flex items-center justify-center text-xs font-medium ${mentor.musait_gunler.includes(gun) ? 'bg-black text-white' : 'bg-gray-100 text-gray-300'}`}>
+                    {mentor.musait_gunler.includes(gun) ? '✓' : ''}
+                  </div>
+                </div>
+              ))}
+            </div>
             {mentor.musait_saat && (
-              <p className="text-sm text-gray-500">Saat aralığı: {mentor.musait_saat}</p>
+              <p className="text-sm text-gray-500 mt-3">Saat aralığı: {mentor.musait_saat}</p>
             )}
           </div>
         )}
 
         {/* Değerlendirmeler */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-          <h2 className="text-base font-semibold text-black mb-4">
-            Değerlendirmeler
-            <span className="text-sm font-normal text-gray-400 ml-2">({yorumlar.length} yorum)</span>
-          </h2>
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-base font-semibold text-black">Değerlendirmeler</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-semibold text-black">4.8</span>
+              <div>
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map((s) => (
+                    <span key={s} className="text-yellow-400 text-sm">★</span>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400">{yorumlar.length} değerlendirme</p>
+              </div>
+            </div>
+          </div>
           <div className="flex flex-col gap-4">
             {yorumlar.map((y, i) => (
               <div key={i} className={i < yorumlar.length - 1 ? "pb-4 border-b border-gray-100" : ""}>
-                <div className="flex justify-between items-start mb-1">
-                  <div>
-                    <span className="text-sm font-medium text-black">{y.isim}</span>
-                    <span className="text-xs text-yellow-500 ml-2">{"★".repeat(y.puan)}</span>
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">
+                      {y.isim.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-black">{y.isim}</p>
+                      <div className="flex gap-0.5">
+                        {[...Array(y.puan)].map((_, j) => (
+                          <span key={j} className="text-yellow-400 text-xs">★</span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                   <span className="text-xs text-gray-400">{y.tarih}</span>
                 </div>
-                <p className="text-sm text-gray-500">{y.yorum}</p>
+                <p className="text-sm text-gray-500 leading-relaxed ml-10">{y.yorum}</p>
               </div>
             ))}
           </div>
@@ -174,7 +206,7 @@ export default function MentorProfil() {
 
         {/* Benzer mentorlar */}
         {benzerMentorlar.length > 0 && (
-          <div className="mb-6">
+          <div>
             <h2 className="text-base font-semibold text-black mb-4">Benzer mentorlar</h2>
             <div className="grid grid-cols-3 gap-4">
               {benzerMentorlar.map((m) => (
@@ -198,15 +230,17 @@ export default function MentorProfil() {
             </div>
           </div>
         )}
-
       </div>
 
+      {/* Modal */}
       {modalAcik && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
             {gonderildi ? (
               <div className="text-center py-4">
-                <div className="text-3xl mb-3">✓</div>
+                <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-green-600 text-xl">✓</span>
+                </div>
                 <h3 className="text-lg font-semibold text-black mb-2">Talep gönderildi!</h3>
                 <p className="text-sm text-gray-400 mb-4">{mentor.isim} talebini inceleyecek ve sana geri dönecek.</p>
                 <button

@@ -26,42 +26,62 @@ export default function Giris() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white border border-gray-200 rounded-2xl p-8 w-full max-w-sm">
-        <h1 className="text-xl font-semibold mb-2 text-black">Tekrar hoş geldin</h1>
-        <p className="text-sm text-gray-400 mb-6">Hesabına giriş yap</p>
-        <div className="flex flex-col gap-4" onKeyDown={(e) => e.key === 'Enter' && girisYap()}>
-          <input
-  type="email"
-  placeholder="E-posta"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  onKeyDown={(e) => e.key === 'Enter' && girisYap()}
-  className="border border-gray-200 rounded-lg px-4 py-3 text-sm text-black outline-none focus:border-black"
-/>
-        
-          <input
-  type="password"
-  placeholder="Şifre"
-  value={sifre}
-  onChange={(e) => setSifre(e.target.value)}
-  onKeyDown={(e) => e.key === 'Enter' && girisYap()}
-  className="border border-gray-200 rounded-lg px-4 py-3 text-sm text-black outline-none focus:border-black"
-/>
-          <button
-            onClick={girisYap}
-            className="bg-black text-white py-3 rounded-lg text-sm hover:bg-gray-800"
-          >
-            Giriş yap
-          </button>
+    <main className="min-h-screen bg-gray-50 flex">
+
+      {/* Sol panel */}
+      <div className="hidden lg:flex w-1/2 bg-gray-900 flex-col justify-between p-12">
+        <a href="/" className="font-semibold text-white text-lg">MentorMeet</a>
+        <div>
+          <h2 className="text-3xl font-semibold text-white mb-4 leading-snug">
+            Tekrar hoş geldin
+          </h2>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            Mentorlarla bağlantı kur, sorularını sor ve kariyerine doğru adımı at.
+          </p>
         </div>
-        {mesaj && (
-          <p className="text-sm text-gray-500 mt-4 text-center">{mesaj}</p>
-        )}
-        <p className="text-sm text-gray-400 text-center mt-6">
-          Hesabın yok mu?{' '}
-          <a href="/kayit" className="text-black underline">Kayıt ol</a>
-        </p>
+        <p className="text-xs text-gray-600">© 2025 MentorMeet</p>
+      </div>
+
+      {/* Sağ panel */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm">
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold text-black mb-2">Giriş yap</h1>
+            <p className="text-sm text-gray-400">
+              Hesabın yok mu?{' '}
+              <a href="/kayit" className="text-black underline">Kayıt ol</a>
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <input
+              type="email"
+              placeholder="E-posta"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && girisYap()}
+              className="border border-gray-200 rounded-xl px-4 py-3 text-sm text-black outline-none focus:border-black"
+            />
+            <input
+              type="password"
+              placeholder="Şifre"
+              value={sifre}
+              onChange={(e) => setSifre(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && girisYap()}
+              className="border border-gray-200 rounded-xl px-4 py-3 text-sm text-black outline-none focus:border-black"
+            />
+            <button
+              onClick={girisYap}
+              className="bg-black text-white py-3 rounded-xl text-sm font-medium hover:bg-gray-800 mt-1"
+            >
+              Giriş yap
+            </button>
+          </div>
+
+          {mesaj && (
+            <p className="text-sm text-gray-500 mt-4 text-center">{mesaj}</p>
+          )}
+        </div>
       </div>
     </main>
   )
