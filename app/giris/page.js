@@ -32,7 +32,7 @@ export default function Giris() {
       <div className="hidden md:flex w-1/2 bg-gray-900 flex-col justify-between p-12">
         <a href="/" className="font-semibold text-white text-lg">MentorMeet</a>
         <div>
-          <h2 className="text-3xl font-semibold text-white mb-4 leading-snug">Tekrar hoş geldin</h2>
+          <h2 className="text-3xl font-semibold text-white mb-4 leading-snug">Hoş geldin</h2>
           <p className="text-gray-400 text-sm leading-relaxed">Mentorlarla bağlantı kur, sorularını sor ve kariyerine doğru adımı at.</p>
         </div>
         <p className="text-xs text-gray-600">© 2025 MentorMeet</p>

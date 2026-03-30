@@ -1,4 +1,30 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
+
 export default function Home() {
+  const [istatistik, setIstatistik] = useState({ mentor: 0, gorusme: 0 })
+
+  useEffect(() => {
+    async function getir() {
+      const { count: mentorSayisi } = await supabase
+        .from('mentorlar')
+        .select('*', { count: 'exact', head: true })
+
+      const { count: gorusmeSayisi } = await supabase
+        .from('talepler')
+        .select('*', { count: 'exact', head: true })
+        .eq('durum', 'onaylandi')
+
+      setIstatistik({
+        mentor: mentorSayisi || 0,
+        gorusme: gorusmeSayisi || 0
+      })
+    }
+    getir()
+  }, [])
+
   return (
     <main className="min-h-screen bg-white">
 
@@ -12,7 +38,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 pt-16 md:pt-24 pb-12 md:pb-16 text-center">
         <div className="inline-block bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full mb-4 md:mb-6">
           Türkiye'nin ilk kariyer mentörlük platformu
@@ -33,10 +58,9 @@ export default function Home() {
           </a>
         </div>
 
-        {/* İstatistikler */}
         <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-lg mx-auto pb-12 md:pb-16 border-b border-gray-100">
           <div>
-            <p className="text-2xl md:text-3xl font-semibold text-black mb-1">50+</p>
+            <p className="text-2xl md:text-3xl font-semibold text-black mb-1">{istatistik.mentor}+</p>
             <p className="text-xs md:text-sm text-gray-400">Aktif mentor</p>
           </div>
           <div>
@@ -44,13 +68,12 @@ export default function Home() {
             <p className="text-xs md:text-sm text-gray-400">Farklı meslek</p>
           </div>
           <div>
-            <p className="text-2xl md:text-3xl font-semibold text-black mb-1">500+</p>
+            <p className="text-2xl md:text-3xl font-semibold text-black mb-1">{istatistik.gorusme}+</p>
             <p className="text-xs md:text-sm text-gray-400">Görüşme yapıldı</p>
           </div>
         </div>
       </section>
 
-      {/* Nasıl çalışır */}
       <section className="max-w-4xl mx-auto px-6 py-12 md:py-16">
         <h2 className="text-xl md:text-2xl font-semibold text-black text-center mb-8 md:mb-12">Nasıl çalışır?</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -72,7 +95,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Popüler meslekler */}
       <section className="max-w-4xl mx-auto px-6 py-12 md:py-16">
         <h2 className="text-xl md:text-2xl font-semibold text-black mb-6 md:mb-8">Popüler meslekler</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
@@ -95,7 +117,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-gray-100 px-6 py-8 mt-4">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="font-semibold text-black">MentorMeet</span>
