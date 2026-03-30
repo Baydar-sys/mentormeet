@@ -20,6 +20,7 @@ export default function Mesajlar() {
   const [aktifKisi, setAktifKisi] = useState(null)
   const [mesajlar, setMesajlar] = useState([])
   const [yeniMesaj, setYeniMesaj] = useState('')
+  const [solPanelAcik, setSolPanelAcik] = useState(true)
   const altRef = useRef(null)
 
   useEffect(() => {
@@ -102,16 +103,21 @@ export default function Mesajlar() {
     if (!error) setYeniMesaj('')
   }
 
+  function konusmaAc(k) {
+    setAktifKisi(k)
+    setSolPanelAcik(false)
+  }
+
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        <h1 className="text-xl font-semibold text-black mb-6">Mesajlar</h1>
+      <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10">
+        <h1 className="text-xl font-semibold text-black mb-4 md:mb-6">Mesajlar</h1>
 
-        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex" style={{ height: '640px' }}>
+        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex" style={{ height: '600px' }}>
 
           {/* Sol panel */}
-          <div className="w-72 border-r border-gray-100 flex flex-col shrink-0">
+          <div className={`${solPanelAcik ? 'flex' : 'hidden'} md:flex w-full md:w-72 border-r border-gray-100 flex-col shrink-0`}>
             <div className="px-5 py-4 border-b border-gray-100">
               <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Konuşmalar</p>
             </div>
@@ -128,7 +134,7 @@ export default function Mesajlar() {
                 konusmalar.map((k) => (
                   <div
                     key={k.id}
-                    onClick={() => setAktifKisi(k)}
+                    onClick={() => konusmaAc(k)}
                     className={'flex items-center gap-3 px-5 py-4 cursor-pointer transition-all ' + (aktifKisi?.id === k.id ? 'bg-gray-50 border-r-2 border-black' : 'hover:bg-gray-50')}
                   >
                     <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 shrink-0 overflow-hidden">
@@ -149,12 +155,17 @@ export default function Mesajlar() {
           </div>
 
           {/* Sağ panel */}
-          <div className="flex-1 flex flex-col">
+          <div className={`${!solPanelAcik ? 'flex' : 'hidden'} md:flex flex-1 flex-col`}>
             {aktifKisi ? (
               <>
-                {/* Üst bar */}
-                <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3 bg-white">
-                  <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden">
+                <div className="px-4 md:px-6 py-4 border-b border-gray-100 flex items-center gap-3 bg-white">
+                  <button
+                    onClick={() => setSolPanelAcik(true)}
+                    className="md:hidden text-gray-400 hover:text-black mr-1"
+                  >
+                    ←
+                  </button>
+                  <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden shrink-0">
                     {aktifKisi.avatar_url ? (
                       <img src={aktifKisi.avatar_url} alt="avatar" className="w-full h-full object-cover" />
                     ) : (
@@ -167,8 +178,7 @@ export default function Mesajlar() {
                   </div>
                 </div>
 
-                {/* Mesajlar */}
-                <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4 bg-gray-50">
+                <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-4 bg-gray-50">
                   {mesajlar.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-center">
                       <div className="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center mb-3">
@@ -180,7 +190,7 @@ export default function Mesajlar() {
                   ) : (
                     mesajlar.map((m, i) => (
                       <div key={i} className={'flex flex-col ' + (m.gonderen_id === kullanici.id ? 'items-end' : 'items-start')}>
-                        <div className={'max-w-xs lg:max-w-sm px-4 py-3 rounded-2xl text-sm leading-relaxed ' + (m.gonderen_id === kullanici.id ? 'bg-black text-white rounded-br-sm' : 'bg-white text-black rounded-bl-sm border border-gray-100 shadow-sm')}>
+                        <div className={'max-w-xs px-4 py-3 rounded-2xl text-sm leading-relaxed ' + (m.gonderen_id === kullanici.id ? 'bg-black text-white rounded-br-sm' : 'bg-white text-black rounded-bl-sm border border-gray-100 shadow-sm')}>
                           {m.icerik}
                         </div>
                         <div className="flex items-center gap-1 mt-1 px-1">
@@ -195,8 +205,7 @@ export default function Mesajlar() {
                   <div ref={altRef} />
                 </div>
 
-                {/* Mesaj kutusu */}
-                <div className="px-6 py-4 border-t border-gray-100 bg-white flex gap-3">
+                <div className="px-4 md:px-6 py-4 border-t border-gray-100 bg-white flex gap-3">
                   <input
                     type="text"
                     placeholder="Mesaj yaz..."
@@ -207,7 +216,7 @@ export default function Mesajlar() {
                   />
                   <button
                     onClick={mesajGonder}
-                    className="bg-black text-white px-5 py-2.5 rounded-xl text-sm hover:bg-gray-800 font-medium"
+                    className="bg-black text-white px-4 py-2.5 rounded-xl text-sm hover:bg-gray-800 font-medium shrink-0"
                   >
                     Gönder
                   </button>

@@ -15,7 +15,6 @@ export default function Navbar() {
       .select('id')
       .eq('alici_id', userId)
       .eq('okundu', false)
-
     setOkunmamisMesaj(mesajlar?.length || 0)
   }
 
@@ -46,7 +45,6 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!kullanici) return
-
     const kanal = supabase
       .channel('bildirimler')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mesajlar' }, () => {
@@ -56,7 +54,6 @@ export default function Navbar() {
         bildirimleriGetir(kullanici.id)
       })
       .subscribe()
-
     return () => supabase.removeChannel(kanal)
   }, [kullanici])
 
@@ -69,32 +66,32 @@ export default function Navbar() {
       {yukleniyor ? (
         <div className="w-24 h-8 bg-gray-100 rounded-lg animate-pulse"></div>
       ) : kullanici ? (
-        <div className="flex gap-4 items-center">
-          <a href="/mesajlar" className="text-sm text-gray-600 hover:text-black">Mesajlar</a>
-          {okunmamisMesaj > 0 && (
-            <span className="bg-black text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-              {okunmamisMesaj}
-            </span>
-          )}
-          <a href={dashboardLink} className="text-sm text-gray-600 hover:text-black">Dashboard</a>
+        <div className="flex gap-3 items-center">
+          <a href="/mesajlar" className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-black">
+            Mesajlar
+            {okunmamisMesaj > 0 && (
+              <span className="bg-black text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {okunmamisMesaj}
+              </span>
+            )}
+          </a>
           <a href={profilLink} className="flex items-center gap-2 hover:opacity-80">
-            <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden">
+            <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden shrink-0">
               {avatarUrl ? (
                 <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
               ) : (
                 kullanici.user_metadata?.isim?.charAt(0).toUpperCase()
               )}
             </div>
-            <span className="text-sm text-black">{kullanici.user_metadata?.isim}</span>
           </a>
           <button
             onClick={async () => {
               await supabase.auth.signOut()
               window.location.href = '/'
             }}
-            className="text-sm bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800"
+            className="text-sm bg-black text-white px-3 py-2 rounded-lg hover:bg-gray-800"
           >
-            Çıkış yap
+            Çıkış
           </button>
         </div>
       ) : (

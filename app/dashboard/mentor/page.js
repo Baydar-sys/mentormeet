@@ -39,8 +39,6 @@ export default function MentorDashboard() {
   }, [])
 
   async function talepGuncelle(talepId, yeniDurum) {
-    const talep = talepler.find(t => t.id === talepId)
-
     const { error } = await supabase
       .from('talepler')
       .update({ durum: yeniDurum })
@@ -48,59 +46,34 @@ export default function MentorDashboard() {
 
     if (!error) {
       setTalepler(talepler.filter(t => t.id !== talepId))
-
-      if (yeniDurum === 'onaylandi' && talep) {
-        const { data: ogrenciData } = await supabase.auth.admin?.getUserById?.(talep.ogrenci_id) || {}
-
-        await fetch('/api/bildirim', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            to: ogrenciData?.email || '',
-            konu: 'Görüşme talebiniz onaylandı! 🎉',
-            icerik: `
-              <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
-                <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talebiniz onaylandı!</h1>
-                <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
-                  Mentor görüşme talebiniz onaylandı. Şimdi mesajlaşmaya başlayabilirsiniz.
-                </p>
-                <a href="http://localhost:3000/mesajlar" style="background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px;">
-                  Mesajlara git
-                </a>
-              </div>
-            `
-          })
-        })
-      }
     }
   }
+
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-6 py-10">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-8">
 
-        {/* Profil kartı */}
-        <div className="bg-gray-900 rounded-2xl p-8 mb-8 flex items-center gap-6">
-          <div className="w-16 h-16 rounded-xl bg-gray-700 flex items-center justify-center text-xl font-semibold text-white overflow-hidden shrink-0">
+        <div className="bg-gray-900 rounded-2xl p-6 mb-6 flex items-center gap-4">
+          <div className="w-14 h-14 rounded-xl bg-gray-700 flex items-center justify-center text-xl font-semibold text-white overflow-hidden shrink-0">
             {avatarUrl ? (
               <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
             ) : (
               isim.charAt(0).toUpperCase()
             )}
           </div>
-          <div className="flex-1">
-            <p className="text-gray-400 text-sm mb-1">Hoş geldin</p>
-            <h1 className="text-2xl font-semibold text-white">{isim}</h1>
+          <div className="flex-1 min-w-0">
+            <p className="text-gray-400 text-sm mb-0.5">Hoş geldin</p>
+            <h1 className="text-xl font-semibold text-white truncate">{isim}</h1>
           </div>
-          <a href="/dashboard/mentor/profil" className="text-sm border border-gray-600 text-gray-300 px-4 py-2 rounded-lg hover:border-gray-400 hover:text-white transition-all">
-            Profili düzenle
+          <a href="/dashboard/mentor/profil" className="text-xs border border-gray-600 text-gray-300 px-3 py-2 rounded-lg hover:border-gray-400 hover:text-white transition-all shrink-0">
+            Düzenle
           </a>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          {/* Görüşme talepleri */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <h2 className="text-base font-semibold text-black">Görüşme talepleri</h2>
@@ -137,21 +110,20 @@ export default function MentorDashboard() {
             )}
           </div>
 
-          {/* Randevular */}
           <div>
             <h2 className="text-base font-semibold text-black mb-4">Randevular</h2>
             <div className="flex flex-col gap-3">
               {randevular.map((r, i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-4">
-                  <div className="text-center min-w-12 bg-gray-50 rounded-lg py-2">
+                <div key={i} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-3 overflow-hidden">
+                  <div className="text-center min-w-12 bg-gray-50 rounded-lg py-2 shrink-0">
                     <p className="text-xs text-gray-400">{r.tarih}</p>
                     <p className="text-sm font-semibold text-black">{r.saat}</p>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-black">{r.isim}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-black truncate">{r.isim}</p>
                     <p className="text-xs text-gray-400">Görüntülü görüşme</p>
                   </div>
-                  <span className={'text-xs px-2 py-1 rounded-full font-medium ' + (r.durum === 'Onaylı' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700')}>
+                  <span className={'text-xs px-2 py-1 rounded-full font-medium shrink-0 ' + (r.durum === 'Onaylı' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700')}>
                     {r.durum}
                   </span>
                 </div>
