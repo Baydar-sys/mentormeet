@@ -46,7 +46,10 @@ export default function Mesajlar() {
         if (mentorData) {
           kisiler.push({ id: kisiId, isim: mentorData.isim + ' ' + mentorData.soyisim, avatar_url: mentorData.avatar_url || '' })
         } else {
-          kisiler.push({ id: kisiId, isim: 'Öğrenci', avatar_url: '' })
+          const ogrenciIsim = t.ogrenci_isim && t.ogrenci_soyisim
+            ? t.ogrenci_isim + ' ' + t.ogrenci_soyisim
+            : t.ogrenci_isim || 'Öğrenci'
+          kisiler.push({ id: kisiId, isim: ogrenciIsim, avatar_url: '' })
         }
       }
       setKonusmalar(kisiler)
@@ -116,7 +119,6 @@ export default function Mesajlar() {
 
         <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex" style={{ height: '600px' }}>
 
-          {/* Sol panel */}
           <div className={`${solPanelAcik ? 'flex' : 'hidden'} md:flex w-full md:w-72 border-r border-gray-100 flex-col shrink-0`}>
             <div className="px-5 py-4 border-b border-gray-100">
               <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Konuşmalar</p>
@@ -154,17 +156,11 @@ export default function Mesajlar() {
             </div>
           </div>
 
-          {/* Sağ panel */}
           <div className={`${!solPanelAcik ? 'flex' : 'hidden'} md:flex flex-1 flex-col`}>
             {aktifKisi ? (
               <>
                 <div className="px-4 md:px-6 py-4 border-b border-gray-100 flex items-center gap-3 bg-white">
-                  <button
-                    onClick={() => setSolPanelAcik(true)}
-                    className="md:hidden text-gray-400 hover:text-black mr-1"
-                  >
-                    ←
-                  </button>
+                  <button onClick={() => setSolPanelAcik(true)} className="md:hidden text-gray-400 hover:text-black mr-1">←</button>
                   <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden shrink-0">
                     {aktifKisi.avatar_url ? (
                       <img src={aktifKisi.avatar_url} alt="avatar" className="w-full h-full object-cover" />
@@ -214,10 +210,7 @@ export default function Mesajlar() {
                     onKeyDown={(e) => e.key === 'Enter' && mesajGonder()}
                     className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-black outline-none focus:border-black"
                   />
-                  <button
-                    onClick={mesajGonder}
-                    className="bg-black text-white px-4 py-2.5 rounded-xl text-sm hover:bg-gray-800 font-medium shrink-0"
-                  >
+                  <button onClick={mesajGonder} className="bg-black text-white px-4 py-2.5 rounded-xl text-sm hover:bg-gray-800 font-medium shrink-0">
                     Gönder
                   </button>
                 </div>

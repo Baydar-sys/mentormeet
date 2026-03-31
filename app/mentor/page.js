@@ -82,7 +82,9 @@ export default function MentorProfil() {
       ogrenci_id: kullanici.id,
       mentor_id: mentor.kullanici_id,
       mesaj: mesaj,
-      durum: 'bekliyor'
+      durum: 'bekliyor',
+      ogrenci_isim: kullanici.user_metadata?.isim || '',
+      ogrenci_soyisim: kullanici.user_metadata?.soyisim || '',
     })
 
     if (error) {
@@ -99,11 +101,26 @@ export default function MentorProfil() {
       return
     }
 
+    const { data: mevcutYorum } = await supabase
+      .from('yorumlar')
+      .select('id')
+      .eq('ogrenci_id', kullanici.id)
+      .eq('mentor_id', mentor.kullanici_id)
+      .single()
+
+    if (mevcutYorum) {
+      setYorumMesaj('Bu mentor için zaten bir değerlendirme yazdınız.')
+      return
+    }
+
+    const { data: userData } = await supabase.auth.getUser()
     const { error } = await supabase.from('yorumlar').insert({
       ogrenci_id: kullanici.id,
       mentor_id: mentor.kullanici_id,
       puan: yeniPuan,
-      yorum: yeniYorum
+      yorum: yeniYorum,
+      ogrenci_isim: userData.user?.user_metadata?.isim || '',
+      ogrenci_soyisim: userData.user?.user_metadata?.soyisim || '',
     })
 
     if (error) {
@@ -234,9 +251,13 @@ export default function MentorProfil() {
                 <div key={i} className={i < yorumlar.length - 1 ? "pb-4 border-b border-gray-100" : ""}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">Ö</div>
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">
+                        {y.ogrenci_isim ? y.ogrenci_isim.charAt(0).toUpperCase() : 'Ö'}
+                      </div>
                       <div>
-                        <p className="text-sm font-medium text-black">Öğrenci</p>
+                        <p className="text-sm font-medium text-black">
+                          {y.ogrenci_isim ? y.ogrenci_isim.charAt(0) + '. ' + (y.ogrenci_soyisim ? y.ogrenci_soyisim.charAt(0) + '.' : '') : 'Ö.K.'}
+                        </p>
                         <div className="flex gap-0.5">
                           {[...Array(y.puan)].map((_, j) => (
                             <span key={j} className="text-yellow-400 text-xs">★</span>
