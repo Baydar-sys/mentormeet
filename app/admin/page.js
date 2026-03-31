@@ -7,9 +7,8 @@ const ADMIN_EMAIL = 'mehmetbaydar183@gmail.com'
 
 export default function Admin() {
   const [kullanici, setKullanici] = useState(null)
-  const [yetkisiz, setYetkisiz] = useState(false)
   const [aktifSekme, setAktifSekme] = useState('istatistik')
-  const [istatistik, setIstatistik] = useState({ mentor: 0, ogrenci: 0, gorusme: 0, basvuru: 0 })
+  const [istatistik, setIstatistik] = useState({ mentor: 0, gorusme: 0, basvuru: 0 })
   const [basvurular, setBasvurular] = useState([])
   const [talepler, setTalepler] = useState([])
   const [mentorlar, setMentorlar] = useState([])
@@ -17,8 +16,12 @@ export default function Admin() {
   useEffect(() => {
     async function getir() {
       const { data: userData } = await supabase.auth.getUser()
-      if (!userData.user || userData.user.email !== ADMIN_EMAIL) {
-        setYetkisiz(true)
+      if (!userData.user) {
+        window.location.href = '/giris'
+        return
+      }
+      if (userData.user.user_metadata?.rol !== 'admin' && userData.user.email !== ADMIN_EMAIL) {
+        window.location.href = '/'
         return
       }
       setKullanici(userData.user)
@@ -75,19 +78,6 @@ export default function Admin() {
     setBasvurular(basvurular.map(b => b.id === id ? { ...b, durum: yeniDurum } : b))
   }
 
-   
-  if (yetkisiz) {
-    return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold text-black mb-2">Yetkisiz erişim</h1>
-          <p className="text-sm text-gray-400 mb-4">Bu sayfaya erişim yetkiniz yok.</p>
-          <a href="/" className="text-sm text-black underline">Ana sayfaya dön</a>
-        </div>
-      </main>
-    )
-  }
-
   if (!kullanici) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -117,7 +107,6 @@ export default function Admin() {
 
       <div className="max-w-5xl mx-auto px-6 py-10">
 
-        {/* Sekmeler */}
         <div className="flex gap-2 mb-8 border-b border-gray-200">
           {[
             { id: 'istatistik', label: 'İstatistikler' },
@@ -132,7 +121,6 @@ export default function Admin() {
           ))}
         </div>
 
-        {/* İstatistikler */}
         {aktifSekme === 'istatistik' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
@@ -148,7 +136,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* Başvurular */}
         {aktifSekme === 'basvurular' && (
           <div className="flex flex-col gap-4">
             {basvurular.length === 0 ? (
@@ -191,7 +178,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* Talepler */}
         {aktifSekme === 'talepler' && (
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <table className="w-full text-sm">
@@ -219,7 +205,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* Mentorlar */}
         {aktifSekme === 'mentorlar' && (
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <table className="w-full text-sm">

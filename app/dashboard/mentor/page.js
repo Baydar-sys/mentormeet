@@ -17,6 +17,14 @@ export default function MentorDashboard() {
   useEffect(() => {
     async function getir() {
       const { data: userData } = await supabase.auth.getUser()
+      if (!userData.user) {
+        window.location.href = '/giris'
+        return
+      }
+      if (userData.user.user_metadata?.rol !== 'mentor') {
+        window.location.href = '/'
+        return
+      }
       setIsim(userData.user?.user_metadata?.isim || '')
 
       const { data: mentorData } = await supabase
