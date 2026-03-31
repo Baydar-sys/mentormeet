@@ -17,11 +17,13 @@ export default function Giris() {
       setMesaj('Hata: ' + error.message)
     } else {
       const rol = data.user?.user_metadata?.rol
-      if (rol === 'mentor') {
-        window.location.href = '/dashboard/mentor'
-      } else {
-        window.location.href = '/dashboard/ogrenci'
-      }
+if (rol === 'admin') {
+  window.location.href = '/admin'
+} else if (rol === 'mentor') {
+  window.location.href = '/dashboard/mentor'
+} else {
+  window.location.href = '/dashboard/ogrenci'
+}
     }
   }
 

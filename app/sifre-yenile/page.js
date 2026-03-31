@@ -57,15 +57,25 @@ export default function SifreYenile() {
         <div className="w-full max-w-sm">
           {tamamlandi ? (
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-green-600 text-2xl">✓</span>
-              </div>
-              <h1 className="text-2xl font-semibold text-black mb-2">Şifren güncellendi!</h1>
-              <p className="text-sm text-gray-400 mb-6">Yeni şifrenle giriş yapabilirsin.</p>
-              <a href="/giris" className="bg-black text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-800">
-                Giriş yap
-              </a>
-            </div>
+  <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+    <span className="text-green-600 text-3xl">🎉</span>
+  </div>
+  <h1 className="text-2xl font-semibold text-black mb-2">MentorMeet'e hoş geldin!</h1>
+  <p className="text-gray-500 text-sm leading-relaxed mb-2">
+    Artık resmi bir MentorMeet mentörüsün.
+  </p>
+  <p className="text-gray-400 text-sm leading-relaxed mb-8">
+    Profilini tamamla, öğrencilerden görüşme talepleri almaya başla ve deneyimlerini paylaş.
+  </p>
+  <div className="flex flex-col gap-3">
+    <a href="/giris" className="bg-black text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-800">
+      Panele giriş yap
+    </a>
+    <a href="/mentor-ol" className="text-sm text-gray-400 hover:text-black">
+      Mentor ol sayfasına dön
+    </a>
+  </div>
+</div>
           ) : !hazir ? (
             <div className="text-center">
               <p className="text-sm text-gray-400">Bağlantı doğrulanıyor...</p>

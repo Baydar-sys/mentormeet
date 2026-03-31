@@ -9,94 +9,103 @@ const sektorler = ['Tümü', 'Teknoloji', 'Sağlık', 'Hukuk', 'Finans', 'Eğiti
 
 function MesleklerIcerik() {
   const searchParams = useSearchParams()
-  const meslek = searchParams.get('meslek') || ''
+  const baslangicMeslek = searchParams.get('meslek') || ''
   const [mentorlar, setMentorlar] = useState([])
-  const [filtrelenmis, setFiltrelenmis] = useState([])
+  const [yorumSayilari, setYorumSayilari] = useState({})
   const [arama, setArama] = useState('')
-  const [secilenSektor, setSecilenSektor] = useState(meslek || 'Tümü')
+  const [secilenSektor, setSecilenSektor] = useState(baslangicMeslek || 'Tümü')
 
   useEffect(() => {
     async function getir() {
-      const { data } = await supabase
-        .from('mentorlar')
-        .select('*')
-
+      const { data } = await supabase.from('mentorlar').select('*')
       setMentorlar(data || [])
-      setFiltrelenmis(data || [])
+
+      const { data: yorumlar } = await supabase
+        .from('yorumlar')
+        .select('mentor_id, puan')
+
+      const sayilar = {}
+      for (const y of yorumlar || []) {
+        if (!sayilar[y.mentor_id]) sayilar[y.mentor_id] = { toplam: 0, sayi: 0 }
+        sayilar[y.mentor_id].toplam += y.puan
+        sayilar[y.mentor_id].sayi += 1
+      }
+      setYorumSayilari(sayilar)
     }
     getir()
   }, [])
 
-  useEffect(() => {
-    let sonuc = mentorlar
+  const filtrelenmis = mentorlar.filter(m => {
+    const aramaUyuyor = arama.trim() === '' ||
+      (m.isim + ' ' + m.soyisim).toLowerCase().includes(arama.toLowerCase()) ||
+      m.unvan?.toLowerCase().includes(arama.toLowerCase())
 
-    if (secilenSektor && secilenSektor !== 'Tümü') {
-      sonuc = sonuc.filter(m => m.sektor === secilenSektor)
-    }
+    const sektorUyuyor = secilenSektor === 'Tümü' || m.sektor === secilenSektor
 
-    if (arama.trim()) {
-      sonuc = sonuc.filter(m =>
-        (m.isim + ' ' + m.soyisim).toLowerCase().includes(arama.toLowerCase()) ||
-        m.unvan?.toLowerCase().includes(arama.toLowerCase())
-      )
-    }
-
-    setFiltrelenmis(sonuc)
-  }, [arama, secilenSektor, mentorlar])
+    return aramaUyuyor && sektorUyuyor
+  })
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
+    <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-10">
       <h1 className="text-2xl font-semibold text-black mb-1">Mentorlar</h1>
       <p className="text-sm text-gray-400 mb-6">Deneyimli kişilerle tanış.</p>
 
-      {/* Arama */}
       <input
         type="text"
         placeholder="İsim veya unvan ara..."
         value={arama}
         onChange={(e) => setArama(e.target.value)}
-        className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-black outline-none focus:border-black mb-4"
+        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-black outline-none focus:border-black mb-4 bg-white"
       />
 
-      {/* Sektör filtresi */}
       <div className="flex flex-wrap gap-2 mb-8">
         {sektorler.map((s) => (
-          <button
-            key={s}
-            onClick={() => setSecilenSektor(s)}
-            className={'px-4 py-2 rounded-lg text-sm border transition-all ' + (secilenSektor === s ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400')}
-          >
+          <button key={s} onClick={() => setSecilenSektor(s)}
+            className={'px-3 py-1.5 rounded-lg text-xs border transition-all ' + (secilenSektor === s ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400')}>
             {s}
           </button>
         ))}
       </div>
 
-      {/* Sonuçlar */}
+      <p className="text-xs text-gray-400 mb-4">{filtrelenmis.length} mentor bulundu</p>
+
       {filtrelenmis.length === 0 ? (
-        <p className="text-sm text-gray-400">Sonuç bulunamadı.</p>
+        <div className="text-center py-16">
+          <p className="text-sm text-gray-400">Sonuç bulunamadı.</p>
+        </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
-          {filtrelenmis.map((m) => (
-            <a key={m.kullanici_id} href={'/mentor?id=' + m.kullanici_id} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-sm block">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-lg font-semibold text-blue-700 overflow-hidden shrink-0">
-                  {m.avatar_url ? (
-                    <img src={m.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    m.isim?.charAt(0).toUpperCase()
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filtrelenmis.map((m) => {
+            const yorumBilgi = yorumSayilari[m.kullanici_id]
+            const ortalama = yorumBilgi ? (yorumBilgi.toplam / yorumBilgi.sayi).toFixed(1) : null
+
+            return (
+              <a key={m.kullanici_id} href={'/mentor?id=' + m.kullanici_id} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-sm block transition-all">
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-lg font-semibold text-blue-700 overflow-hidden shrink-0">
+                    {m.avatar_url ? (
+                      <img src={m.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      m.isim?.charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-black truncate">{m.isim} {m.soyisim}</p>
+                    <p className="text-sm text-gray-400 truncate">{m.unvan} {m.firma ? '· ' + m.firma : ''}</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {m.sektor && <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">{m.sektor}</span>}
+                  {m.deneyim && <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{m.deneyim}</span>}
+                  {ortalama && (
+                    <span className="text-xs bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full">
+                      ★ {ortalama} ({yorumBilgi.sayi})
+                    </span>
                   )}
                 </div>
-                <div>
-                  <p className="font-medium text-black">{m.isim} {m.soyisim}</p>
-                  <p className="text-sm text-gray-400">{m.unvan}</p>
-                </div>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">{m.sektor}</span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{m.deneyim}</span>
-              </div>
-            </a>
-          ))}
+              </a>
+            )
+          })}
         </div>
       )}
     </div>

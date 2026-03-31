@@ -7,7 +7,7 @@ export async function POST(request) {
 
   const { error } = await resend.emails.send({
     from: 'MentorMeet <onboarding@resend.dev>',
-    to: 'KENDI_EMAIL_ADRESIN@gmail.com',
+    to,
     subject: konu,
     html: icerik
   })

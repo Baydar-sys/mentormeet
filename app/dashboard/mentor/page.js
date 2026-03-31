@@ -39,6 +39,8 @@ export default function MentorDashboard() {
   }, [])
 
   async function talepGuncelle(talepId, yeniDurum) {
+    const talep = talepler.find(t => t.id === talepId)
+
     const { error } = await supabase
       .from('talepler')
       .update({ durum: yeniDurum })
@@ -46,6 +48,57 @@ export default function MentorDashboard() {
 
     if (!error) {
       setTalepler(talepler.filter(t => t.id !== talepId))
+
+      const { data: ogrenciData } = await supabase.auth.getUser()
+      const { data: mentorProfil } = await supabase
+        .from('mentorlar')
+        .select('isim, soyisim')
+        .eq('kullanici_id', ogrenciData.user.id)
+        .single()
+
+      const mentorIsim = mentorProfil ? mentorProfil.isim + ' ' + mentorProfil.soyisim : 'Mentor'
+
+      if (yeniDurum === 'onaylandi') {
+        await fetch('/api/bildirim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: 'mehmetbaydar183@gmail.com',
+            konu: 'Görüşme talebiniz onaylandı! 🎉',
+            icerik: `
+              <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+                <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talebiniz onaylandı!</h1>
+                <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+                  <strong>${mentorIsim}</strong> görüşme talebinizi onayladı. Şimdi mesajlaşmaya başlayabilirsiniz.
+                </p>
+                <a href="http://localhost:3000/mesajlar" style="background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px;">
+                  Mesajlara git
+                </a>
+              </div>
+            `
+          })
+        })
+      } else if (yeniDurum === 'reddedildi') {
+        await fetch('/api/bildirim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: 'mehmetbaydar183@gmail.com',
+            konu: 'Görüşme talebiniz hakkında bilgi',
+            icerik: `
+              <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+                <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talep güncellemesi</h1>
+                <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+                  Üzgünüz, <strong>${mentorIsim}</strong> şu an için görüşme talebinizi karşılayamıyor. Başka bir mentorla görüşmeyi deneyebilirsiniz.
+                </p>
+                <a href="http://localhost:3000/meslekler" style="background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px;">
+                  Diğer mentorlara bak
+                </a>
+              </div>
+            `
+          })
+        })
+      }
     }
   }
 
