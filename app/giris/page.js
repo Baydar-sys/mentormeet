@@ -18,7 +18,7 @@ export default function Giris() {
     } else {
       const rol = data.user?.user_metadata?.rol
 if (rol === 'admin') {
-  window.location.href = '/admin'
+  window.location.href = '/yonetim-x7k9'
 } else if (rol === 'mentor') {
   window.location.href = '/dashboard/mentor'
 } else {

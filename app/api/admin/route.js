@@ -14,7 +14,7 @@ export async function POST(request) {
       isim,
       soyisim,
     },
-    redirectTo: 'http://localhost:3000/sifre-yenile'
+    redirectTo: 'https://mentormeet-phi.vercel.app/sifre-yenile'
   })
 
   if (inviteError) {
