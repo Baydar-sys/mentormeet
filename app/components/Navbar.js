@@ -67,6 +67,7 @@ export default function Navbar() {
         <div className="w-24 h-8 bg-gray-100 rounded-lg animate-pulse"></div>
       ) : kullanici ? (
         <div className="flex gap-3 items-center">
+          <a href={dashboardLink} className="text-sm text-gray-600 hover:text-black">Dashboard</a>
           <a href="/mesajlar" className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-black">
             Mesajlar
             {okunmamisMesaj > 0 && (
