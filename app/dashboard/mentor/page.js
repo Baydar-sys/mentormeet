@@ -8,23 +8,11 @@ export default function MentorDashboard() {
   const [isim, setIsim] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
   const [talepler, setTalepler] = useState([])
-  const [randevular] = useState([
-    { isim: "Selin T.", tarih: "Bugün", saat: "15:00", durum: "Onaylı" },
-    { isim: "Burak D.", tarih: "Yarın", saat: "11:00", durum: "Bekliyor" },
-    { isim: "Ayşe M.", tarih: "29 Mart", saat: "14:00", durum: "Onaylı" },
-  ])
+  const [onayliGorusmeler, setOnayliGorusmeler] = useState([])
 
   useEffect(() => {
     async function getir() {
       const { data: userData } = await supabase.auth.getUser()
-      if (!userData.user) {
-        window.location.href = '/giris'
-        return
-      }
-      if (userData.user.user_metadata?.rol !== 'mentor') {
-        window.location.href = '/'
-        return
-      }
       setIsim(userData.user?.user_metadata?.isim || '')
 
       const { data: mentorData } = await supabase
@@ -42,6 +30,14 @@ export default function MentorDashboard() {
         .eq('durum', 'bekliyor')
 
       setTalepler(talepData || [])
+
+      const { data: onayliData } = await supabase
+        .from('talepler')
+        .select('*')
+        .eq('mentor_id', userData.user.id)
+        .eq('durum', 'onaylandi')
+
+      setOnayliGorusmeler(onayliData || [])
     }
     getir()
   }, [])
@@ -57,33 +53,27 @@ export default function MentorDashboard() {
     if (!error) {
       setTalepler(talepler.filter(t => t.id !== talepId))
 
-      const { data: ogrenciData } = await supabase.auth.getUser()
       const { data: mentorProfil } = await supabase
         .from('mentorlar')
         .select('isim, soyisim')
-        .eq('kullanici_id', ogrenciData.user.id)
+        .eq('kullanici_id', (await supabase.auth.getUser()).data.user.id)
         .single()
 
       const mentorIsim = mentorProfil ? mentorProfil.isim + ' ' + mentorProfil.soyisim : 'Mentor'
 
       if (yeniDurum === 'onaylandi') {
+        setOnayliGorusmeler(prev => [...prev, { ...talep, durum: 'onaylandi' }])
         await fetch('/api/bildirim', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             to: 'mehmetbaydar183@gmail.com',
             konu: 'Görüşme talebiniz onaylandı! 🎉',
-            icerik: `
-              <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
-                <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talebiniz onaylandı!</h1>
-                <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
-                  <strong>${mentorIsim}</strong> görüşme talebinizi onayladı. Şimdi mesajlaşmaya başlayabilirsiniz.
-                </p>
-                <a href="http://localhost:3000/mesajlar" style="background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px;">
-                  Mesajlara git
-                </a>
-              </div>
-            `
+            icerik: `<div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+              <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talebiniz onaylandı!</h1>
+              <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;"><strong>${mentorIsim}</strong> görüşme talebinizi onayladı.</p>
+              <a href="https://mentormeet-phi.vercel.app/mesajlar" style="background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px;">Mesajlara git</a>
+            </div>`
           })
         })
       } else if (yeniDurum === 'reddedildi') {
@@ -93,17 +83,11 @@ export default function MentorDashboard() {
           body: JSON.stringify({
             to: 'mehmetbaydar183@gmail.com',
             konu: 'Görüşme talebiniz hakkında bilgi',
-            icerik: `
-              <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
-                <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talep güncellemesi</h1>
-                <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
-                  Üzgünüz, <strong>${mentorIsim}</strong> şu an için görüşme talebinizi karşılayamıyor. Başka bir mentorla görüşmeyi deneyebilirsiniz.
-                </p>
-                <a href="http://localhost:3000/meslekler" style="background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px;">
-                  Diğer mentorlara bak
-                </a>
-              </div>
-            `
+            icerik: `<div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+              <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talep güncellemesi</h1>
+              <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">Üzgünüz, <strong>${mentorIsim}</strong> şu an için görüşme talebinizi karşılayamıyor.</p>
+              <a href="https://mentormeet-phi.vercel.app/meslekler" style="background: #000; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-size: 14px;">Diğer mentorlara bak</a>
+            </div>`
           })
         })
       }
@@ -114,7 +98,7 @@ export default function MentorDashboard() {
     <main className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 md:px-6 py-8">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-10">
 
         <div className="bg-gray-900 rounded-2xl p-6 mb-6 flex items-center gap-4">
           <div className="w-14 h-14 rounded-xl bg-gray-700 flex items-center justify-center text-xl font-semibold text-white overflow-hidden shrink-0">
@@ -135,6 +119,7 @@ export default function MentorDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+          {/* Görüşme talepleri */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <h2 className="text-base font-semibold text-black">Görüşme talepleri</h2>
@@ -153,7 +138,9 @@ export default function MentorDashboard() {
                 {talepler.map((t) => (
                   <div key={t.id} className="bg-white border border-gray-200 rounded-xl p-4">
                     <div className="flex justify-between items-start mb-2">
-                      <p className="text-sm font-medium text-black">Öğrenci</p>
+                      <p className="text-sm font-medium text-black">
+                        {t.ogrenci_isim ? t.ogrenci_isim + ' ' + t.ogrenci_soyisim : 'Öğrenci'}
+                      </p>
                       <span className="text-xs bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full">Bekliyor</span>
                     </div>
                     <p className="text-sm text-gray-500 mb-3 leading-relaxed">{t.mesaj}</p>
@@ -171,25 +158,33 @@ export default function MentorDashboard() {
             )}
           </div>
 
+          {/* Onaylı görüşmeler */}
           <div>
-            <h2 className="text-base font-semibold text-black mb-4">Randevular</h2>
-            <div className="flex flex-col gap-3">
-              {randevular.map((r, i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-3 overflow-hidden">
-                  <div className="text-center min-w-12 bg-gray-50 rounded-lg py-2 shrink-0">
-                    <p className="text-xs text-gray-400">{r.tarih}</p>
-                    <p className="text-sm font-semibold text-black">{r.saat}</p>
+            <h2 className="text-base font-semibold text-black mb-4">Onaylı görüşmeler</h2>
+            {onayliGorusmeler.length === 0 ? (
+              <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
+                <p className="text-sm text-gray-400">Henüz onaylı görüşme yok.</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {onayliGorusmeler.map((t) => (
+                  <div key={t.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-sm font-semibold text-green-700 shrink-0">
+                      {t.ogrenci_isim ? t.ogrenci_isim.charAt(0).toUpperCase() : 'Ö'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-black truncate">
+                        {t.ogrenci_isim ? t.ogrenci_isim + ' ' + t.ogrenci_soyisim : 'Öğrenci'}
+                      </p>
+                      <p className="text-xs text-gray-400 truncate">{t.mesaj}</p>
+                    </div>
+                    <a href="/mesajlar" className="text-xs bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 shrink-0">
+                      Mesaj
+                    </a>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-black truncate">{r.isim}</p>
-                    <p className="text-xs text-gray-400">Görüntülü görüşme</p>
-                  </div>
-                  <span className={'text-xs px-2 py-1 rounded-full font-medium shrink-0 ' + (r.durum === 'Onaylı' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700')}>
-                    {r.durum}
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
         </div>
