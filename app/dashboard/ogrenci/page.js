@@ -152,7 +152,7 @@ export default function OgrenciDashboard() {
                         </a>
                         <button
                           onClick={() => setYorumModal(t)}
-                          className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50"
+                          className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 text-black"
                         >
                           Değerlendir
                         </button>
