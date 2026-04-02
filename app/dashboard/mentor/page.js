@@ -148,7 +148,7 @@ export default function MentorDashboard() {
                       <button onClick={() => talepGuncelle(t.id, 'onaylandi')} className="flex-1 text-xs bg-black text-white py-2 rounded-lg hover:bg-gray-800">
                         Kabul et
                       </button>
-                      <button onClick={() => talepGuncelle(t.id, 'reddedildi')} className="flex-1 text-xs border border-gray-200 py-2 rounded-lg hover:bg-gray-50">
+                      <button onClick={() => talepGuncelle(t.id, 'reddedildi')} className="flex-1 text-xs bg-black border-gray-200 py-2 rounded-lg hover:bg-gray-50">
                         Reddet
                       </button>
                     </div>
