@@ -35,14 +35,8 @@ export default function OgrenciDashboard() {
   useEffect(() => {
     async function getir() {
       const { data: userData } = await supabase.auth.getUser()
-      if (!userData.user) {
-        window.location.href = '/giris'
-        return
-      }
-      if (userData.user.user_metadata?.rol !== 'ogrenci') {
-        window.location.href = '/'
-        return
-      }
+      if (!userData.user) { window.location.href = '/giris'; return }
+      if (userData.user.user_metadata?.rol !== 'ogrenci') { window.location.href = '/'; return }
       setIsim(userData.user?.user_metadata?.isim || '')
       setEgitim(userData.user?.user_metadata?.egitim || '')
 
@@ -68,6 +62,17 @@ export default function OgrenciDashboard() {
     getir()
   }, [])
 
+  async function gorusmeSonlandir(talepId) {
+    const { error } = await supabase
+      .from('talepler')
+      .update({ sonlandirildi: true })
+      .eq('id', talepId)
+
+    if (!error) {
+      setTalepler(talepler.map(t => t.id === talepId ? { ...t, sonlandirildi: true } : t))
+    }
+  }
+
   async function yorumGonder() {
     if (!yeniYorum.trim()) {
       setYorumMesaj('Lütfen bir yorum yaz.')
@@ -79,7 +84,9 @@ export default function OgrenciDashboard() {
       ogrenci_id: userData.user.id,
       mentor_id: yorumModal.mentor_id,
       puan: yeniPuan,
-      yorum: yeniYorum
+      yorum: yeniYorum,
+      ogrenci_isim: userData.user?.user_metadata?.isim || '',
+      ogrenci_soyisim: userData.user?.user_metadata?.soyisim || '',
     })
 
     if (error) {
@@ -92,15 +99,17 @@ export default function OgrenciDashboard() {
     }
   }
 
-  function durumRenk(durum) {
-    if (durum === 'onaylandi') return 'bg-green-50 text-green-700'
-    if (durum === 'reddedildi') return 'bg-red-50 text-red-700'
+  function durumRenk(t) {
+    if (t.sonlandirildi) return 'bg-blue-50 text-blue-700'
+    if (t.durum === 'onaylandi') return 'bg-green-50 text-green-700'
+    if (t.durum === 'reddedildi') return 'bg-red-50 text-red-700'
     return 'bg-yellow-50 text-yellow-700'
   }
 
-  function durumYazi(durum) {
-    if (durum === 'onaylandi') return 'Onaylandı'
-    if (durum === 'reddedildi') return 'Reddedildi'
+  function durumYazi(t) {
+    if (t.sonlandirildi) return 'Tamamlandı'
+    if (t.durum === 'onaylandi') return 'Onaylandı'
+    if (t.durum === 'reddedildi') return 'Reddedildi'
     return 'Bekliyor'
   }
 
@@ -114,9 +123,7 @@ export default function OgrenciDashboard() {
             <p className="text-gray-400 text-sm mb-1">Hoş geldin</p>
             <h1 className="text-2xl font-semibold text-white mb-2">{isim}</h1>
             {egitim && (
-              <span className="text-xs text-gray-300 px-3 py-1 rounded-full border border-gray-700">
-                {egitim}
-              </span>
+              <span className="text-xs text-gray-300 px-3 py-1 rounded-full border border-gray-700">{egitim}</span>
             )}
           </div>
         </div>
@@ -128,31 +135,45 @@ export default function OgrenciDashboard() {
               {talepler.map((t) => {
                 const mentor = mentorBilgileri[t.mentor_id]
                 return (
-                  <div key={t.id} className="bg-white border border-gray-200 rounded-xl p-4 flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden shrink-0">
-                      {mentor?.avatar_url ? (
-                        <img src={mentor.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-                      ) : (
-                        mentor?.isim?.charAt(0).toUpperCase() || '?'
-                      )}
+                  <div key={t.id} className="bg-white border border-gray-200 rounded-xl p-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 overflow-hidden shrink-0">
+                        {mentor?.avatar_url ? (
+                          <img src={mentor.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                        ) : (
+                          mentor?.isim?.charAt(0).toUpperCase() || '?'
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-black truncate">
+                          {mentor ? mentor.isim + ' ' + mentor.soyisim : 'Mentor'}
+                        </p>
+                        <p className="text-xs text-gray-400 truncate">{mentor?.unvan}</p>
+                      </div>
+                      <span className={'text-xs px-3 py-1 rounded-full font-medium shrink-0 ' + durumRenk(t)}>
+                        {durumYazi(t)}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-black truncate">
-                        {mentor ? mentor.isim + ' ' + mentor.soyisim : 'Mentor'}
-                      </p>
-                      <p className="text-xs text-gray-400 truncate">{mentor?.unvan}</p>
-                    </div>
-                    <span className={'text-xs px-3 py-1 rounded-full font-medium shrink-0 ' + durumRenk(t.durum)}>
-                      {durumYazi(t.durum)}
-                    </span>
-                    {t.durum === 'onaylandi' && (
-                      <div className="flex gap-2 shrink-0">
-                        <a href="/mesajlar" className="text-xs bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800">
-                          Mesaj
+
+                    {t.durum === 'onaylandi' && !t.sonlandirildi && (
+                      <div className="flex gap-2 mt-3">
+                        <a href="/mesajlar" className="flex-1 text-xs border border-gray-200 py-2 rounded-lg text-center text-black hover:bg-gray-50">
+                          Mesaj gönder
                         </a>
                         <button
+                          onClick={() => gorusmeSonlandir(t.id)}
+                          className="flex-1 text-xs border border-red-200 py-2 rounded-lg text-red-600 hover:bg-red-50"
+                        >
+                          Görüşmeyi sonlandır
+                        </button>
+                      </div>
+                    )}
+
+                    {t.sonlandirildi && (
+                      <div className="flex gap-2 mt-3">
+                        <button
                           onClick={() => setYorumModal(t)}
-                          className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 text-black"
+                          className="flex-1 text-xs border border-gray-200 py-2 rounded-lg text-black hover:bg-gray-50"
                         >
                           Değerlendir
                         </button>
@@ -186,9 +207,7 @@ export default function OgrenciDashboard() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {filtrelenmis.map((m) => (
               <a key={m.isim} href={'/meslekler?meslek=' + encodeURIComponent(m.alan)} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-sm block">
-                <span className={'text-xs px-2 py-1 rounded-full font-medium ' + m.renk}>
-                  {m.alan}
-                </span>
+                <span className={'text-xs px-2 py-1 rounded-full font-medium ' + m.renk}>{m.alan}</span>
                 <h3 className="font-medium text-black mt-3 mb-1">{m.isim}</h3>
                 <p className="text-sm text-gray-400">{m.mentor} mentor</p>
               </a>
@@ -204,7 +223,6 @@ export default function OgrenciDashboard() {
               {mentorBilgileri[yorumModal.mentor_id]?.isim} için değerlendirme
             </h3>
             <p className="text-sm text-gray-400 mb-4">Deneyimini diğer öğrencilerle paylaş.</p>
-
             <div className="mb-4">
               <p className="text-xs font-medium text-gray-500 mb-2">Puan</p>
               <div className="flex gap-2">
@@ -216,7 +234,6 @@ export default function OgrenciDashboard() {
                 ))}
               </div>
             </div>
-
             <textarea
               placeholder="Görüşme nasıldı? Deneyimini anlat..."
               value={yeniYorum}
@@ -226,12 +243,8 @@ export default function OgrenciDashboard() {
             />
             {yorumMesaj && <p className="text-sm text-red-500 mb-3">{yorumMesaj}</p>}
             <div className="flex gap-3">
-              <button onClick={() => setYorumModal(null)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm hover:bg-gray-50">
-                İptal
-              </button>
-              <button onClick={yorumGonder} className="flex-1 bg-black text-white py-2.5 rounded-lg text-sm hover:bg-gray-800">
-                Gönder
-              </button>
+              <button onClick={() => setYorumModal(null)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm text-black hover:bg-gray-50">İptal</button>
+              <button onClick={yorumGonder} className="flex-1 bg-black text-white py-2.5 rounded-lg text-sm hover:bg-gray-800">Gönder</button>
             </div>
           </div>
         </div>

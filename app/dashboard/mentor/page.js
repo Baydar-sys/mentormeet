@@ -178,9 +178,24 @@ export default function MentorDashboard() {
                       </p>
                       <p className="text-xs text-gray-400 truncate">{t.mesaj}</p>
                     </div>
-                    <a href="/mesajlar" className="text-xs bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 shrink-0">
-                      Mesaj
-                    </a>
+                    {!t.sonlandirildi ? (
+  <div className="flex gap-2 shrink-0">
+    <a href="/mesajlar" className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg text-black hover:bg-gray-50">
+      Mesaj
+    </a>
+    <button
+      onClick={async () => {
+        const { error } = await supabase.from('talepler').update({ sonlandirildi: true }).eq('id', t.id)
+        if (!error) setOnayliGorusmeler(onayliGorusmeler.map(g => g.id === t.id ? { ...g, sonlandirildi: true } : g))
+      }}
+      className="text-xs border border-red-200 px-3 py-1.5 rounded-lg text-red-600 hover:bg-red-50"
+    >
+      Sonlandır
+    </button>
+  </div>
+) : (
+  <span className="text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full shrink-0">Tamamlandı</span>
+)}
                   </div>
                 ))}
               </div>
