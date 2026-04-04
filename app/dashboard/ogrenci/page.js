@@ -74,7 +74,17 @@ export default function OgrenciDashboard() {
   }
 
   async function yorumGonder() {
-    
+    const { data: mevcutYorum } = await supabase
+      .from('yorumlar')
+      .select('id')
+      .eq('ogrenci_id', userData.user.id)
+      .eq('mentor_id', yorumModal.mentor_id)
+      .single()
+
+    if (mevcutYorum) {
+      setYorumMesaj('Bu mentor için zaten bir değerlendirme yaptınız.')
+      return
+    }
 
     const { data: userData } = await supabase.auth.getUser()
     const { error } = await supabase.from('yorumlar').insert({
