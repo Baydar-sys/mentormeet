@@ -74,10 +74,7 @@ export default function OgrenciDashboard() {
   }
 
   async function yorumGonder() {
-    if (!yeniYorum.trim()) {
-      setYorumMesaj('Lütfen bir yorum yaz.')
-      return
-    }
+    
 
     const { data: userData } = await supabase.auth.getUser()
     const { error } = await supabase.from('yorumlar').insert({
