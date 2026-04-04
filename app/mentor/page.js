@@ -236,11 +236,7 @@ export default function MentorProfil() {
                 </div>
               )}
             </div>
-            {kullanici && kullanici.user_metadata?.rol !== 'mentor' && (
-              <button onClick={() => setYorumModalAcik(true)} className="text-sm border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
-                Değerlendir
-              </button>
-            )}
+            {null}
           </div>
 
           {yorumlar.length === 0 ? (
