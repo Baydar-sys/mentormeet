@@ -96,10 +96,7 @@ export default function MentorProfil() {
   }
 
   async function yorumGonder() {
-    if (!yeniYorum.trim()) {
-      setYorumMesaj('Lütfen bir yorum yaz.')
-      return
-    }
+  
 
     const { data: mevcutYorum } = await supabase
       .from('yorumlar')
