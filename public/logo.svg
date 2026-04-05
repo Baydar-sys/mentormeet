@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
+  <rect x="150" y="40" width="380" height="320" rx="24" fill="#ffffff" stroke="#e8edf5" stroke-width="1.5"/>
+  <rect x="150" y="40" width="380" height="160" rx="24" fill="#1a2744"/>
+  <rect x="150" y="160" width="380" height="20" fill="#1a2744"/>
+  <line x1="200" y1="100" x2="260" y2="100" stroke="#2d4a7a" stroke-width="1.5"/>
+  <line x1="420" y1="100" x2="480" y2="100" stroke="#2d4a7a" stroke-width="1.5"/>
+  <line x1="200" y1="100" x2="200" y2="150" stroke="#2d4a7a" stroke-width="1.5"/>
+  <line x1="480" y1="100" x2="480" y2="150" stroke="#2d4a7a" stroke-width="1.5"/>
+  <line x1="200" y1="150" x2="480" y2="150" stroke="#2d4a7a" stroke-width="1.5"/>
+  <circle cx="200" cy="100" r="3" fill="#4a9eff"/>
+  <circle cx="480" cy="100" r="3" fill="#4a9eff"/>
+  <circle cx="200" cy="150" r="3" fill="#4a9eff"/>
+  <circle cx="480" cy="150" r="3" fill="#4a9eff"/>
+  <circle cx="305" cy="115" r="26" fill="#1a2744" stroke="#ffffff" stroke-width="2.5"/>
+  <circle cx="305" cy="109" r="9" fill="#ffffff"/>
+  <path d="M289 128 Q305 122 321 128" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="375" cy="115" r="26" fill="#1a2744" stroke="#4a9eff" stroke-width="2.5"/>
+  <circle cx="375" cy="109" r="9" fill="#4a9eff"/>
+  <path d="M359 128 Q375 122 391 128" fill="none" stroke="#4a9eff" stroke-width="2" stroke-linecap="round"/>
+  <line x1="332" y1="115" x2="348" y2="115" stroke="#ffffff" stroke-width="2" stroke-dasharray="3,2"/>
+  <polygon points="348,111 356,115 348,119" fill="#ffffff"/>
+  <text x="340" y="240" text-anchor="middle" font-family="Arial" font-weight="700" font-size="26" letter-spacing="2" fill="#1a2744">MENTORMEET</text>
+  <line x1="260" y1="255" x2="420" y2="255" stroke="#e8edf5" stroke-width="1"/>
+  <text x="340" y="278" text-anchor="middle" font-family="Arial" font-weight="400" font-size="11" letter-spacing="2" fill="#4a6fa5">CHOOSE YOUR FUTURE</text>
+  <circle cx="290" cy="310" r="4" fill="#1a2744"/>
+  <circle cx="310" cy="310" r="4" fill="#4a9eff"/>
+  <circle cx="330" cy="310" r="4" fill="#1a2744"/>
+  <circle cx="350" cy="310" r="4" fill="#4a9eff"/>
+  <circle cx="370" cy="310" r="4" fill="#1a2744"/>
+  <circle cx="390" cy="310" r="4" fill="#4a9eff"/>
+</svg>
