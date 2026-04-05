@@ -114,7 +114,7 @@ function MesleklerIcerik() {
 
 export default function Meslekler() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-stone-50">
       <Navbar />
       <Suspense fallback={<div className="p-10 text-sm text-gray-400">Yükleniyor...</div>}>
         <MesleklerIcerik />

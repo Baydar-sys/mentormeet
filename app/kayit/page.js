@@ -30,7 +30,7 @@ export default function Kayit() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex">
+    <main className="min-h-screen bg-stone-50 flex">
       <div className="hidden lg:flex w-1/2 bg-gray-900 flex-col justify-between p-12">
         <a href="/" className="font-semibold text-white text-lg">MentorMeet</a>
         <div>

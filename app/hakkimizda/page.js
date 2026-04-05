@@ -13,7 +13,7 @@ export default function Hakkimizda() {
           Her yıl yüz binlerce öğrenci, yeterince bilgi sahibi olmadan üniversite bölümü seçiyor. Biz bunu değiştirmek için buradayız.
         </p>
 
-        <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-8">
+        <div className="bg-stone-50 rounded-2xl p-6 md:p-8 mb-8">
           <h2 className="text-xl font-semibold text-black mb-4">Hikayemiz</h2>
           <p className="text-gray-500 text-sm leading-relaxed mb-4">
             MentorMeet, üniversite seçimi sürecinde doğru bilgiye ulaşmanın ne kadar zor olduğunu bizzat yaşayan bir ekip tarafından kuruldu. Çoğu öğrenci internetteki genel bilgilerle ya da çevresindeki birkaç kişinin tavsiyesiyle hayatlarının en önemli kararlarından birini veriyor.
@@ -30,7 +30,7 @@ export default function Hakkimizda() {
             { baslik: "Erişilebilirlik", aciklama: "Her öğrencinin mentora ulaşabilmesi için engelleri kaldırıyoruz." },
             { baslik: "Topluluk", aciklama: "Mentor ve öğrenciler birlikte büyüyen bir ekosistem." },
           ].map((deger) => (
-            <div key={deger.baslik} className="bg-gray-50 rounded-xl p-5">
+            <div key={deger.baslik} className="bg-stone-50 rounded-xl p-5">
               <h3 className="font-medium text-black mb-2">{deger.baslik}</h3>
               <p className="text-sm text-gray-500 leading-relaxed">{deger.aciklama}</p>
             </div>

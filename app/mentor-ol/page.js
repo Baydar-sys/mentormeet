@@ -38,7 +38,7 @@ export default function MentorOl() {
 
   if (gonderildi) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
+      <main className="min-h-screen bg-stone-50 flex items-center justify-center px-6">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-green-600 text-2xl">✓</span>
@@ -56,7 +56,7 @@ export default function MentorOl() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex">
+    <main className="min-h-screen bg-stone-50 flex">
 
       {/* Sol panel */}
       <div className="hidden lg:flex w-1/2 bg-gray-900 flex-col justify-between p-12">

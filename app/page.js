@@ -53,7 +53,7 @@ export default function Home() {
           <a href="/kayit" className="bg-black text-white px-8 py-3.5 rounded-lg text-sm font-medium hover:bg-gray-800">
             Hemen başla
           </a>
-          <a href="/meslekler" className="border border-gray-200 text-black px-8 py-3.5 rounded-lg text-sm font-medium hover:bg-gray-50">
+          <a href="/meslekler" className="border border-gray-200 text-black px-8 py-3.5 rounded-lg text-sm font-medium hover:bg-stone-50">
             Mentorları keşfet
           </a>
         </div>

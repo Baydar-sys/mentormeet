@@ -80,7 +80,7 @@ export default function Admin() {
 
   if (!kullanici) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <main className="min-h-screen bg-stone-50 flex items-center justify-center">
         <p className="text-sm text-gray-400">Yükleniyor...</p>
       </main>
     )
@@ -99,7 +99,7 @@ export default function Admin() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-stone-50">
       <nav className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
         <span className="font-semibold text-lg text-black">MentorMeet Admin</span>
         <a href="/" className="text-sm text-gray-500 hover:text-black">Siteye dön</a>
@@ -167,7 +167,7 @@ export default function Admin() {
                       <button onClick={() => basvuruGuncelle(b.id, 'onaylandi')} className="flex-1 text-xs bg-black text-white py-2 rounded-lg hover:bg-gray-800">
                         Onayla
                       </button>
-                      <button onClick={() => basvuruGuncelle(b.id, 'reddedildi')} className="flex-1 text-xs border border-gray-200 py-2 rounded-lg hover:bg-gray-50">
+                      <button onClick={() => basvuruGuncelle(b.id, 'reddedildi')} className="flex-1 text-xs border border-gray-200 py-2 rounded-lg hover:bg-stone-50">
                         Reddet
                       </button>
                     </div>
@@ -181,7 +181,7 @@ export default function Admin() {
         {aktifSekme === 'talepler' && (
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-stone-50 border-b border-gray-200">
                 <tr>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">ID</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">Mesaj</th>
@@ -190,7 +190,7 @@ export default function Admin() {
               </thead>
               <tbody>
                 {talepler.map((t, i) => (
-                  <tr key={t.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                  <tr key={t.id} className={i % 2 === 0 ? 'bg-white' : 'bg-stone-50'}>
                     <td className="px-4 py-3 text-xs text-gray-400">{t.id}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">{t.mesaj}</td>
                     <td className="px-4 py-3">
@@ -208,7 +208,7 @@ export default function Admin() {
         {aktifSekme === 'mentorlar' && (
           <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-stone-50 border-b border-gray-200">
                 <tr>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">İsim</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">Unvan</th>
@@ -218,7 +218,7 @@ export default function Admin() {
               </thead>
               <tbody>
                 {mentorlar.map((m, i) => (
-                  <tr key={m.kullanici_id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                  <tr key={m.kullanici_id} className={i % 2 === 0 ? 'bg-white' : 'bg-stone-50'}>
                     <td className="px-4 py-3 font-medium text-black">{m.isim} {m.soyisim}</td>
                     <td className="px-4 py-3 text-gray-500">{m.unvan}</td>
                     <td className="px-4 py-3">

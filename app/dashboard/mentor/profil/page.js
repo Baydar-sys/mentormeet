@@ -130,7 +130,7 @@ export default function ProfilDuzenle() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-stone-50">
       <Navbar />
       <div className="max-w-2xl mx-auto px-6 py-10">
         <a href="/dashboard/mentor" className="inline-flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 mb-6">
@@ -152,7 +152,7 @@ export default function ProfilDuzenle() {
                   isim.charAt(0).toUpperCase()
                 )}
               </div>
-              <label className="text-sm text-black border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 cursor-pointer">
+              <label className="text-sm text-black border border-gray-200 px-4 py-2 rounded-lg hover:bg-stone-50 cursor-pointer">
                 {yukleniyor ? 'Yükleniyor...' : 'Fotoğraf seç'}
                 <input type="file" accept="image/*" onChange={fotoyukle} className="hidden" />
               </label>
