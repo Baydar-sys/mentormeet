@@ -95,7 +95,7 @@ export default function MentorDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50">
+   <main className="min-h-screen" style={{ backgroundColor: '#fafaf9' }}>
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-10">
