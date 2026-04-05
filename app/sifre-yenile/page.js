@@ -43,7 +43,7 @@ export default function SifreYenile() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50 flex">
+    <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
       <div className="hidden lg:flex w-1/2 bg-gray-900 flex-col justify-between p-12">
         <a href="/" className="font-semibold text-white text-lg">MentorMeet</a>
         <div>

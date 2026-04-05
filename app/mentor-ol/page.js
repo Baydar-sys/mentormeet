@@ -38,7 +38,7 @@ export default function MentorOl() {
 
   if (gonderildi) {
     return (
-      <main className="min-h-screen bg-stone-50 flex items-center justify-center px-6">
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-green-600 text-2xl">✓</span>
@@ -56,7 +56,7 @@ export default function MentorOl() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50 flex">
+    <main className="min-h-screen flex" style={{backgroundColor: '#f8f7f4'}}>
 
       {/* Sol panel */}
       <div className="hidden lg:flex w-1/2 bg-gray-900 flex-col justify-between p-12">
@@ -168,9 +168,9 @@ export default function MentorOl() {
                 rows={4} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-black outline-none focus:border-black resize-none" />
             </div>
 
-            <button onClick={basvur} className="bg-black text-white py-3 rounded-xl text-sm font-medium hover:bg-gray-800 mt-1">
-              Başvur
-            </button>
+            <button onClick={basvur} className="py-3 rounded-xl text-sm font-medium text-white mt-1" style={{backgroundColor: '#1f2937'}}>
+  Başvur
+</button>
 
             {mesaj && <p className="text-sm text-gray-500 text-center">{mesaj}</p>}
 

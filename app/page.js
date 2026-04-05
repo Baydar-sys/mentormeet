@@ -26,15 +26,15 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-white">
+   <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
 
       <nav className="px-6 py-4 flex justify-between items-center border-b border-gray-100">
         <span className="font-semibold text-lg text-black">MentorMeet</span>
         <div className="flex gap-3 items-center">
           <a href="/giris" className="text-sm text-gray-600 hover:text-black">Giriş yap</a>
-          <a href="/kayit" className="text-sm bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800">
-            Kayıt ol
-          </a>
+          <a href="/kayit" className="text-sm px-4 py-2 rounded-lg text-white" style={{backgroundColor: '#1f2937'}}>
+  Kayıt ol
+</a>
         </div>
       </nav>
 
@@ -44,16 +44,16 @@ export default function Home() {
         </div>
         <h1 className="text-3xl md:text-5xl font-semibold text-black mb-4 md:mb-6 leading-tight">
           Üniversite seçmeden önce<br />
-          <span className="text-gray-400">o meslekten biriyle konuş</span>
+          <span className="text-black">o meslekten biriyle konuş</span>
         </h1>
         <p className="text-gray-500 text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
-          Yazılımcılar, doktorlar, avukatlar — gerçek deneyimlerini seninle paylaşmak için burada.
+          Meslek sahipleri gerçek deneyimlerini seninle paylaşmak için burada.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12 md:mb-16">
-          <a href="/kayit" className="bg-black text-white px-8 py-3.5 rounded-lg text-sm font-medium hover:bg-gray-800">
-            Hemen başla
-          </a>
-          <a href="/meslekler" className="border border-gray-200 text-black px-8 py-3.5 rounded-lg text-sm font-medium hover:bg-stone-50">
+          <a href="/kayit" className="px-8 py-3.5 rounded-lg text-sm font-medium text-white" style={{backgroundColor: '#1f2937'}}>
+  Hemen başla
+</a>
+          <a href="/meslekler" className="border border-gray-200 text-black px-8 py-3.5 rounded-lg text-sm font-medium hover:bg-gray-50">
             Mentorları keşfet
           </a>
         </div>
@@ -120,7 +120,7 @@ export default function Home() {
       <footer className="border-t border-gray-100 px-6 py-8 mt-4">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="font-semibold text-black">MentorMeet</span>
-          <p className="text-sm text-gray-400">© 2025 MentorMeet. Tüm hakları saklıdır.</p>
+          <p className="text-sm text-gray-400">© 2026 MentorMeet. Tüm hakları saklıdır.</p>
           <div className="flex gap-6">
             <a href="/hakkimizda" className="text-sm text-gray-400 hover:text-black">Hakkımızda</a>
             <a href="/gizlilik" className="text-sm text-gray-400 hover:text-black">Gizlilik</a>

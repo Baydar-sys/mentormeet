@@ -28,7 +28,7 @@ if (rol === 'admin') {
   }
 
   return (
-    <main className="min-h-screen bg-white flex flex-col md:flex-row">
+    <main className="min-h-screen flex" style={{backgroundColor: '#f8f7f4'}}>
 
       {/* Sol panel - masaüstünde görünür */}
       <div className="hidden md:flex w-1/2 bg-gray-900 flex-col justify-between p-12">
@@ -37,7 +37,7 @@ if (rol === 'admin') {
           <h2 className="text-3xl font-semibold text-white mb-4 leading-snug">Hoş geldin</h2>
           <p className="text-gray-400 text-sm leading-relaxed">Mentorlarla bağlantı kur, sorularını sor ve kariyerine doğru adımı at.</p>
         </div>
-        <p className="text-xs text-gray-600">© 2025 MentorMeet</p>
+        <p className="text-xs text-gray-600">© 2026 MentorMeet</p>
       </div>
 
       {/* Sağ panel */}
@@ -77,11 +77,12 @@ if (rol === 'admin') {
                 className="border border-gray-200 rounded-xl px-4 py-3 text-sm text-black outline-none focus:border-black"
               />
               <button
-                onClick={girisYap}
-                className="bg-black text-white py-3 rounded-xl text-sm font-medium hover:bg-gray-800 mt-1"
-              >
-                Giriş yap
-              </button>
+  onClick={girisYap}
+  className="py-3 rounded-xl text-sm font-medium text-white"
+  style={{backgroundColor: '#1f2937'}}
+>
+  Giriş yap
+</button>
               <a href="/sifremi-unuttum" className="text-xs text-gray-400 hover:text-black text-center">
                 Şifremi unuttum
               </a>

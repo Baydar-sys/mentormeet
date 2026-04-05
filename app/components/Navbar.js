@@ -90,7 +90,7 @@ export default function Navbar() {
               await supabase.auth.signOut()
               window.location.href = '/'
             }}
-            className="text-sm bg-black text-white px-3 py-2 rounded-lg hover:bg-gray-800"
+            className="text-sm px-3 py-2 rounded-lg text-white" style={{backgroundColor: '#1f2937'}}
           >
             Çıkış
           </button>

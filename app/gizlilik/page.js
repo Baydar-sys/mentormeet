@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar'
 
 export default function Gizlilik() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
       <Navbar />
 
       <section className="max-w-3xl mx-auto px-6 pt-12 md:pt-20 pb-16">
@@ -47,7 +47,7 @@ export default function Gizlilik() {
       <footer className="border-t border-gray-100 px-6 py-8">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="font-semibold text-black">MentorMeet</span>
-          <p className="text-sm text-gray-400">© 2025 MentorMeet. Tüm hakları saklıdır.</p>
+          <p className="text-sm text-gray-400">© 2026 MentorMeet. Tüm hakları saklıdır.</p>
           <div className="flex gap-6">
             <a href="/hakkimizda" className="text-sm text-gray-400 hover:text-black">Hakkımızda</a>
             <a href="/gizlilik" className="text-sm text-gray-400 hover:text-black">Gizlilik</a>

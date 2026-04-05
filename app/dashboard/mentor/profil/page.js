@@ -69,7 +69,7 @@ export default function ProfilDuzenle() {
     }
   }
 
- async function fotoyukle(e) {
+  async function fotoyukle(e) {
     const dosya = e.target.files[0]
     if (!dosya) return
     setYukleniyor(true)
@@ -94,6 +94,7 @@ export default function ProfilDuzenle() {
     }
     setYukleniyor(false)
   }
+
   async function kaydet() {
     const { data: userData } = await supabase.auth.getUser()
 
@@ -130,10 +131,10 @@ export default function ProfilDuzenle() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50">
+    <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
       <Navbar />
       <div className="max-w-2xl mx-auto px-6 py-10">
-        <a href="/dashboard/mentor" className="inline-flex items-center gap-2 text-sm text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 mb-6">
+        <a href="/dashboard/mentor" className="inline-flex items-center gap-2 text-sm text-white px-4 py-2 rounded-lg mb-6" style={{backgroundColor: '#1f2937'}}>
           ← Dashboard'a dön
         </a>
         <h1 className="text-xl font-semibold text-black mb-1">Profilini düzenle</h1>
@@ -141,7 +142,6 @@ export default function ProfilDuzenle() {
 
         <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col gap-5 mb-6">
 
-          {/* Profil fotoğrafı */}
           <div>
             <label className="text-xs font-medium text-gray-500 mb-2 block">Profil fotoğrafı</label>
             <div className="flex items-center gap-4">
@@ -152,14 +152,13 @@ export default function ProfilDuzenle() {
                   isim.charAt(0).toUpperCase()
                 )}
               </div>
-              <label className="text-sm text-black border border-gray-200 px-4 py-2 rounded-lg hover:bg-stone-50 cursor-pointer">
+              <label className="text-sm text-black border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 cursor-pointer">
                 {yukleniyor ? 'Yükleniyor...' : 'Fotoğraf seç'}
                 <input type="file" accept="image/*" onChange={fotoyukle} className="hidden" />
               </label>
             </div>
           </div>
 
-          {/* Ad soyad */}
           <div>
             <label className="text-xs font-medium text-gray-500 mb-1 block">Ad & Soyad</label>
             <div className="flex gap-3">
@@ -170,7 +169,6 @@ export default function ProfilDuzenle() {
             </div>
           </div>
 
-          {/* Unvan & Firma */}
           <div>
             <label className="text-xs font-medium text-gray-500 mb-1 block">Unvan & Şirket</label>
             <div className="flex gap-3">
@@ -181,72 +179,69 @@ export default function ProfilDuzenle() {
             </div>
           </div>
 
-          {/* Sektör */}
           <div>
             <label className="text-xs font-medium text-gray-500 mb-2 block">Sektör</label>
             <div className="flex flex-wrap gap-2">
               {sektorler.map((s) => (
                 <button key={s} onClick={() => setSektor(s)}
-                  className={'px-4 py-2 rounded-lg text-sm border transition-all ' + (sektor === s ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400')}>
+                  className={'px-4 py-2 rounded-lg text-sm border transition-all ' + (sektor === s ? 'text-white border-transparent' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400')}
+                  style={sektor === s ? {backgroundColor: '#1f2937'} : {}}>
                   {s}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Deneyim */}
           <div>
             <label className="text-xs font-medium text-gray-500 mb-2 block">Deneyim</label>
             <div className="flex gap-2">
               {deneyimler.map((d) => (
                 <button key={d} onClick={() => setDeneyim(d)}
-                  className={'flex-1 py-2.5 rounded-lg text-sm border transition-all ' + (deneyim === d ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400')}>
+                  className={'flex-1 py-2.5 rounded-lg text-sm border transition-all ' + (deneyim === d ? 'text-white border-transparent' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400')}
+                  style={deneyim === d ? {backgroundColor: '#1f2937'} : {}}>
                   {d}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Müsait günler */}
           <div>
             <label className="text-xs font-medium text-gray-500 mb-2 block">Müsait günler</label>
             <div className="flex flex-wrap gap-2">
               {gunler.map((g) => (
                 <button key={g} onClick={() => gunToggle(g)}
-                  className={'px-3 py-2 rounded-lg text-sm border transition-all ' + (musaitGunler.includes(g) ? 'bg-black text-white border-black' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400')}>
+                  className={'px-3 py-2 rounded-lg text-sm border transition-all ' + (musaitGunler.includes(g) ? 'text-white border-transparent' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400')}
+                  style={musaitGunler.includes(g) ? {backgroundColor: '#1f2937'} : {}}>
                   {g}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Müsait saat aralığı */}
           <div>
             <label className="text-xs font-medium text-gray-500 mb-1 block">Müsait saat aralığı</label>
             <input type="text" placeholder="Ör: 09:00 - 18:00" value={musaitSaat} onChange={(e) => setMusaitSaat(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-3 py-3 text-sm text-black outline-none focus:border-black" />
           </div>
 
-          {/* Hakkımda */}
           <div>
             <label className="text-xs font-medium text-gray-500 mb-1 block">Hakkımda</label>
             <textarea placeholder="Kendini tanıt..." value={hakkinda} onChange={(e) => setHakkinda(e.target.value)}
               rows={4} className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-black outline-none focus:border-black resize-none" />
           </div>
 
-          <button onClick={kaydet} className="bg-black text-white py-3 rounded-lg text-sm hover:bg-gray-800">
+          <button onClick={kaydet} className="py-3 rounded-lg text-sm text-white" style={{backgroundColor: '#1f2937'}}>
             Kaydet
           </button>
 
           {mesaj && <p className="text-sm text-center text-gray-500">{mesaj}</p>}
         </div>
 
-        {/* Şifre değiştir */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col gap-4">
           <h2 className="text-base font-semibold text-black">Şifre değiştir</h2>
           <input type="password" placeholder="Yeni şifre" value={yeniSifre} onChange={(e) => setYeniSifre(e.target.value)}
             className="w-full border border-gray-200 rounded-lg px-3 py-3 text-sm text-black outline-none focus:border-black" />
-          <button onClick={sifreDegistir} className="bg-black text-white py-3 rounded-lg text-sm hover:bg-gray-800">
+          <button onClick={sifreDegistir} className="py-3 rounded-lg text-sm text-white" style={{backgroundColor: '#1f2937'}}>
             Şifreyi güncelle
           </button>
         </div>

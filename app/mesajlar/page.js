@@ -112,7 +112,7 @@ export default function Mesajlar() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50">
+    <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10">
         <h1 className="text-xl font-semibold text-black mb-4 md:mb-6">Mesajlar</h1>
@@ -137,7 +137,7 @@ export default function Mesajlar() {
                   <div
                     key={k.id}
                     onClick={() => konusmaAc(k)}
-                    className={'flex items-center gap-3 px-5 py-4 cursor-pointer transition-all ' + (aktifKisi?.id === k.id ? 'bg-stone-50 border-r-2 border-black' : 'hover:bg-stone-50')}
+                    className={'flex items-center gap-3 px-5 py-4 cursor-pointer transition-all ' + (aktifKisi?.id === k.id ? 'bg-gray-50 border-r-2 border-black' : 'hover:bg-gray-50')}
                   >
                     <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-sm font-semibold text-blue-700 shrink-0 overflow-hidden">
                       {k.avatar_url ? (
@@ -174,7 +174,7 @@ export default function Mesajlar() {
                   </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-4 bg-stone-50">
+                <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 flex flex-col gap-4 bg-gray-50">
                   {mesajlar.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-center">
                       <div className="w-12 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center mb-3">
@@ -216,7 +216,7 @@ export default function Mesajlar() {
                 </div>
               </>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center bg-stone-50">
+              <div className="flex-1 flex flex-col items-center justify-center bg-gray-50">
                 <div className="w-16 h-16 bg-white border border-gray-200 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
                   <span className="text-2xl">💬</span>
                 </div>

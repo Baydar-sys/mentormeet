@@ -95,7 +95,7 @@ export default function MentorDashboard() {
   }
 
   return (
-   <main className="min-h-screen" style={{ backgroundColor: '#fafaf9' }}>
+   <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-10">
@@ -148,7 +148,7 @@ export default function MentorDashboard() {
                       <button onClick={() => talepGuncelle(t.id, 'onaylandi')} className="flex-1 text-xs bg-black text-white py-2 rounded-lg hover:bg-gray-800">
                         Kabul et
                       </button>
-                      <button onClick={() => talepGuncelle(t.id, 'reddedildi')} className="flex-1 text-xs bg-black border-gray-200 py-2 rounded-lg hover:bg-stone-50">
+                      <button onClick={() => talepGuncelle(t.id, 'reddedildi')} className="flex-1 text-xs bg-black border-gray-200 py-2 rounded-lg hover:bg-gray-50">
                         Reddet
                       </button>
                     </div>
@@ -180,7 +180,7 @@ export default function MentorDashboard() {
                     </div>
                     {!t.sonlandirildi ? (
   <div className="flex gap-2 shrink-0">
-    <a href="/mesajlar" className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg text-black hover:bg-stone-50">
+    <a href="/mesajlar" className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg text-black hover:bg-gray-50">
       Mesaj
     </a>
     <button

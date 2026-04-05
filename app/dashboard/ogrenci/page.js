@@ -135,7 +135,7 @@ export default function OgrenciDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50">
+    <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
       <Navbar />
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-10">
 
@@ -179,7 +179,7 @@ export default function OgrenciDashboard() {
 
                     {t.durum === 'onaylandi' && !t.sonlandirildi && (
                       <div className="flex gap-2 mt-3">
-                        <a href="/mesajlar" className="flex-1 text-xs border border-gray-200 py-2 rounded-lg text-center text-black hover:bg-stone-50">
+                        <a href="/mesajlar" className="flex-1 text-xs border border-gray-200 py-2 rounded-lg text-center text-black hover:bg-gray-50">
                           Mesaj gönder
                         </a>
                         <button
@@ -195,7 +195,7 @@ export default function OgrenciDashboard() {
                       <div className="flex gap-2 mt-3">
                         <button
                           onClick={() => setYorumModal(t)}
-                          className="flex-1 text-xs border border-gray-200 py-2 rounded-lg text-black hover:bg-stone-50"
+                          className="flex-1 text-xs border border-gray-200 py-2 rounded-lg text-black hover:bg-gray-50"
                         >
                           Değerlendir
                         </button>
@@ -265,7 +265,7 @@ export default function OgrenciDashboard() {
             />
             {yorumMesaj && <p className="text-sm text-red-500 mb-3">{yorumMesaj}</p>}
             <div className="flex gap-3">
-              <button onClick={() => setYorumModal(null)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm text-black hover:bg-stone-50">İptal</button>
+              <button onClick={() => setYorumModal(null)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm text-black hover:bg-gray-50">İptal</button>
               <button onClick={yorumGonder} className="flex-1 bg-black text-white py-2.5 rounded-lg text-sm hover:bg-gray-800">Gönder</button>
             </div>
           </div>

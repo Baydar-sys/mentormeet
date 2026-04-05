@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar'
 
 export default function Hakkimizda() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
       <Navbar />
 
       <section className="max-w-3xl mx-auto px-6 pt-12 md:pt-20 pb-16">
@@ -13,7 +13,7 @@ export default function Hakkimizda() {
           Her yıl yüz binlerce öğrenci, yeterince bilgi sahibi olmadan üniversite bölümü seçiyor. Biz bunu değiştirmek için buradayız.
         </p>
 
-        <div className="bg-stone-50 rounded-2xl p-6 md:p-8 mb-8">
+        <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-8">
           <h2 className="text-xl font-semibold text-black mb-4">Hikayemiz</h2>
           <p className="text-gray-500 text-sm leading-relaxed mb-4">
             MentorMeet, üniversite seçimi sürecinde doğru bilgiye ulaşmanın ne kadar zor olduğunu bizzat yaşayan bir ekip tarafından kuruldu. Çoğu öğrenci internetteki genel bilgilerle ya da çevresindeki birkaç kişinin tavsiyesiyle hayatlarının en önemli kararlarından birini veriyor.
@@ -30,7 +30,7 @@ export default function Hakkimizda() {
             { baslik: "Erişilebilirlik", aciklama: "Her öğrencinin mentora ulaşabilmesi için engelleri kaldırıyoruz." },
             { baslik: "Topluluk", aciklama: "Mentor ve öğrenciler birlikte büyüyen bir ekosistem." },
           ].map((deger) => (
-            <div key={deger.baslik} className="bg-stone-50 rounded-xl p-5">
+            <div key={deger.baslik} className="bg-gray-50 rounded-xl p-5">
               <h3 className="font-medium text-black mb-2">{deger.baslik}</h3>
               <p className="text-sm text-gray-500 leading-relaxed">{deger.aciklama}</p>
             </div>
@@ -71,7 +71,7 @@ export default function Hakkimizda() {
       <footer className="border-t border-gray-100 px-6 py-8">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="font-semibold text-black">MentorMeet</span>
-          <p className="text-sm text-gray-400">© 2025 MentorMeet. Tüm hakları saklıdır.</p>
+          <p className="text-sm text-gray-400">© 2026 MentorMeet. Tüm hakları saklıdır.</p>
           <div className="flex gap-6">
             <a href="/hakkimizda" className="text-sm text-gray-400 hover:text-black">Hakkımızda</a>
             <a href="/gizlilik" className="text-sm text-gray-400 hover:text-black">Gizlilik</a>

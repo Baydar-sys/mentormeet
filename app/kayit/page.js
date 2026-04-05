@@ -30,7 +30,7 @@ export default function Kayit() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50 flex">
+    <main className="min-h-screen flex" style={{backgroundColor: '#f8f7f4'}}>
       <div className="hidden lg:flex w-1/2 bg-gray-900 flex-col justify-between p-12">
         <a href="/" className="font-semibold text-white text-lg">MentorMeet</a>
         <div>
@@ -42,7 +42,7 @@ export default function Kayit() {
             <div><p className="text-2xl font-semibold text-white">20+</p><p className="text-xs text-gray-400 mt-1">Farklı meslek</p></div>
           </div>
         </div>
-        <p className="text-xs text-gray-600">© 2025 MentorMeet</p>
+        <p className="text-xs text-gray-600">© 2026 MentorMeet</p>
       </div>
 
       <div className="flex-1 flex items-center justify-center px-6 py-12">
@@ -73,7 +73,13 @@ export default function Kayit() {
 
             <input type="email" placeholder="E-posta" value={email} onChange={(e) => setEmail(e.target.value)} className="border border-gray-200 rounded-xl px-4 py-3 text-sm text-black outline-none focus:border-black" />
             <input type="password" placeholder="Şifre" value={sifre} onChange={(e) => setSifre(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && kayitOl()} className="border border-gray-200 rounded-xl px-4 py-3 text-sm text-black outline-none focus:border-black" />
-            <button onClick={kayitOl} className="bg-black text-white py-3 rounded-xl text-sm font-medium hover:bg-gray-800 mt-1">Kayıt ol</button>
+            <button
+  onClick={kayitOl}
+  className="py-3 rounded-xl text-sm font-medium text-white mt-1"
+  style={{backgroundColor: '#1f2937'}}
+>
+  Kayıt ol
+</button>
           </div>
 
           {mesaj && <p className="text-sm text-gray-500 mt-4 text-center">{mesaj}</p>}

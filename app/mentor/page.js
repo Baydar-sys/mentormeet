@@ -141,7 +141,7 @@ export default function MentorProfil() {
 
   if (!mentor) {
     return (
-      <main className="min-h-screen bg-stone-50">
+      <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
         <Navbar />
         <div className="flex items-center justify-center py-24">
           <p className="text-gray-400 text-sm">Profil yükleniyor...</p>
@@ -151,7 +151,7 @@ export default function MentorProfil() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50">
+    <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
       <Navbar />
 <div className="max-w-3xl mx-auto px-6 pt-6">
   <button onClick={() => window.history.back()} className="text-sm text-gray-400 hover:text-black">
@@ -317,7 +317,7 @@ export default function MentorProfil() {
                 <textarea placeholder="Merhaba..." value={mesaj} onChange={(e) => setMesaj(e.target.value)} rows={4} className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-black outline-none focus:border-black resize-none mb-3" />
                 {hata && <p className="text-sm text-red-500 mb-3">{hata}</p>}
                 <div className="flex gap-3">
-                  <button onClick={() => setModalAcik(false)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm hover:bg-stone-50">İptal</button>
+                  <button onClick={() => setModalAcik(false)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm hover:bg-gray-50">İptal</button>
                   <button onClick={talepGonder} className="flex-1 bg-black text-white py-2.5 rounded-lg text-sm hover:bg-gray-800">Gönder</button>
                 </div>
               </>
@@ -344,7 +344,7 @@ export default function MentorProfil() {
             <textarea placeholder="Görüşme nasıldı?" value={yeniYorum} onChange={(e) => setYeniYorum(e.target.value)} rows={4} className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-black outline-none focus:border-black resize-none mb-3" />
             {yorumMesaj && <p className="text-sm text-red-500 mb-3">{yorumMesaj}</p>}
             <div className="flex gap-3">
-              <button onClick={() => setYorumModalAcik(false)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm hover:bg-stone-50">İptal</button>
+              <button onClick={() => setYorumModalAcik(false)} className="flex-1 border border-gray-200 py-2.5 rounded-lg text-sm hover:bg-gray-50">İptal</button>
               <button onClick={yorumGonder} className="flex-1 bg-black text-white py-2.5 rounded-lg text-sm hover:bg-gray-800">Gönder</button>
             </div>
           </div>
