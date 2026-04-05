@@ -10,6 +10,7 @@ export default function OgrenciDashboard() {
   const [arama, setArama] = useState('')
   const [talepler, setTalepler] = useState([])
   const [mentorBilgileri, setMentorBilgileri] = useState({})
+  const [yorumYapildi, setYorumYapildi] = useState({})
   const [yorumModal, setYorumModal] = useState(null)
   const [yeniPuan, setYeniPuan] = useState(5)
   const [yeniYorum, setYeniYorum] = useState('')
@@ -58,6 +59,17 @@ export default function OgrenciDashboard() {
         if (mentor) mentorler[t.mentor_id] = mentor
       }
       setMentorBilgileri(mentorler)
+
+      const { data: yorumData } = await supabase
+        .from('yorumlar')
+        .select('mentor_id')
+        .eq('ogrenci_id', userData.user.id)
+
+      const yapildi = {}
+      for (const y of yorumData || []) {
+        yapildi[y.mentor_id] = true
+      }
+      setYorumYapildi(yapildi)
     }
     getir()
   }, [])
@@ -74,6 +86,8 @@ export default function OgrenciDashboard() {
   }
 
   async function yorumGonder() {
+    const { data: userData } = await supabase.auth.getUser()
+
     const { data: mevcutYorum } = await supabase
       .from('yorumlar')
       .select('id')
@@ -86,7 +100,6 @@ export default function OgrenciDashboard() {
       return
     }
 
-    const { data: userData } = await supabase.auth.getUser()
     const { error } = await supabase.from('yorumlar').insert({
       ogrenci_id: userData.user.id,
       mentor_id: yorumModal.mentor_id,
@@ -99,6 +112,7 @@ export default function OgrenciDashboard() {
     if (error) {
       setYorumMesaj('Hata: ' + error.message)
     } else {
+      setYorumYapildi({ ...yorumYapildi, [yorumModal.mentor_id]: true })
       setYorumModal(null)
       setYeniYorum('')
       setYeniPuan(5)
@@ -141,6 +155,7 @@ export default function OgrenciDashboard() {
             <div className="flex flex-col gap-3">
               {talepler.map((t) => {
                 const mentor = mentorBilgileri[t.mentor_id]
+                const yorumYapildiMi = yorumYapildi[t.mentor_id]
                 return (
                   <div key={t.id} className="bg-white border border-gray-200 rounded-xl p-4">
                     <div className="flex items-center gap-4">
@@ -176,7 +191,7 @@ export default function OgrenciDashboard() {
                       </div>
                     )}
 
-                    {t.sonlandirildi && (
+                    {t.sonlandirildi && !yorumYapildiMi && (
                       <div className="flex gap-2 mt-3">
                         <button
                           onClick={() => setYorumModal(t)}
@@ -242,7 +257,7 @@ export default function OgrenciDashboard() {
               </div>
             </div>
             <textarea
-              placeholder="Görüşme nasıldı? Deneyimini anlat..."
+              placeholder="Görüşme hakkında düşüncelerini yaz... (opsiyonel)"
               value={yeniYorum}
               onChange={(e) => setYeniYorum(e.target.value)}
               rows={4}
