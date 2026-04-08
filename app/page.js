@@ -39,13 +39,12 @@ export default function Home() {
       </nav>
 
       <section className="max-w-4xl mx-auto px-6 pt-16 md:pt-24 pb-12 md:pb-16 text-center">
-        <div className="inline-block bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full mb-4 md:mb-6">
-          Türkiye'nin ilk kariyer mentörlük platformu
-        </div>
-        <h1 className="text-3xl md:text-5xl font-semibold text-black mb-4 md:mb-6 leading-tight">
-          Üniversite seçmeden önce<br />
-          <span className="text-black">o meslekten biriyle konuş</span>
-        </h1>
+     <div className="inline-block bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full mb-4 md:mb-6">
+  Türkiye'nin ilk kariyer mentörlük platformu
+</div>
+       <h1 className="text-3xl md:text-5xl font-semibold mb-4 md:mb-6 leading-tight" style={{color: '#1a2744'}}>
+  Geleceğin Senin Ellerinde
+</h1>
         <p className="text-gray-500 text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
           Meslek sahipleri gerçek deneyimlerini seninle paylaşmak için burada.
         </p>
