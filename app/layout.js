@@ -12,8 +12,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "MentorMeet",
-  description: "Üniversite seçmeden önce o meslekten biriyle konuş",
+  title: "MentorMeet — Choose Your Future",
+  description: "Üniversite seçmeden önce o meslekten biriyle konuş. Yazılım, sağlık, hukuk ve daha fazlası — deneyimli mentorlarla tanış.",
+  keywords: "mentor, üniversite, kariyer, meslek, rehberlik, öğrenci",
+  openGraph: {
+    title: "MentorMeet — Choose Your Future",
+    description: "Üniversite seçmeden önce o meslekten biriyle konuş.",
+    url: "https://mentormeet-phi.vercel.app",
+    siteName: "MentorMeet",
+    locale: "tr_TR",
+    type: "website",
+  },
   manifest: "/manifest.json",
 }
 

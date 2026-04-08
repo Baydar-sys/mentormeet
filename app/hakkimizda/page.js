@@ -1,5 +1,10 @@
 import Navbar from '../components/Navbar'
 
+export const metadata = {
+  title: "Hakkımızda | MentorMeet",
+  description: "MentorMeet, üniversite öğrencilerini kariyer sahipleriyle buluşturan bir platform.",
+}
+
 export default function Hakkimizda() {
   return (
     <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>

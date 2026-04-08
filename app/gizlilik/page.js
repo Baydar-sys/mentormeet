@@ -1,5 +1,10 @@
 import Navbar from '../components/Navbar'
 
+export const metadata = {
+  title: "Gizlilik Politikası | MentorMeet",
+  description: "MentorMeet gizlilik politikası — kişisel verilerinizin nasıl toplandığı ve kullanıldığı hakkında bilgi.",
+}
+
 export default function Gizlilik() {
   return (
     <main className="min-h-screen" style={{backgroundColor: '#f8f7f4'}}>
