@@ -38,6 +38,15 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="MentorMeet" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-EMFM30BF7E"></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-EMFM30BF7E');
+          `
+        }} />
       </head>
       <body className="min-h-full flex flex-col" style={{backgroundColor: '#f8f7f4'}}>{children}</body>
     </html>
