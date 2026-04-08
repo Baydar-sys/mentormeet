@@ -85,6 +85,7 @@ export default function MentorProfil() {
       durum: 'bekliyor',
       ogrenci_isim: kullanici.user_metadata?.isim || '',
       ogrenci_soyisim: kullanici.user_metadata?.soyisim || '',
+      ogrenci_email: kullanici.email || '',
     })
 
     if (error) {

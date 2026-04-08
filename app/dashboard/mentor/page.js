@@ -67,7 +67,7 @@ export default function MentorDashboard() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            to: 'mehmetbaydar183@gmail.com',
+            to: talep?.ogrenci_email || 'mehmetbaydar183@gmail.com',
             konu: 'Görüşme talebiniz onaylandı! 🎉',
             icerik: `<div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
               <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talebiniz onaylandı!</h1>
@@ -81,7 +81,7 @@ export default function MentorDashboard() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            to: 'mehmetbaydar183@gmail.com',
+            to: talep?.ogrenci_email || 'mehmetbaydar183@gmail.com',
             konu: 'Görüşme talebiniz hakkında bilgi',
             icerik: `<div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
               <h1 style="font-size: 24px; font-weight: 600; color: #000; margin-bottom: 8px;">Talep güncellemesi</h1>
